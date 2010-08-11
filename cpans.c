@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <curl/curl.h>
+#include <unistd.h>
 
 
 typedef struct {
@@ -18,7 +20,6 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
     membuf * mbuf = (membuf*) userp;
 
     if( mbuf->index + nmemb > mbuf->length ) {
-        printf( "realloc: %x\n" , mbuf->buffer );
         mbuf->length += 1024 * 1000;
         mbuf->buffer = (void*) realloc( mbuf->buffer , mbuf->length * sizeof(char) );
     }
@@ -29,6 +30,14 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
     return nmemb;
 }
 
+
+
+void _gunzip( char * file )
+{
+    char cmd[64];
+    sprintf( cmd , "gunzip %s" , file );
+    system( cmd );
+}
 
 int init( char * mirror_site )
 {
@@ -64,19 +73,36 @@ int init( char * mirror_site )
         printf("\n");
     }
 
-
+    FILE * fp;
+    char * tempfile = "packages.gz";
     if(mbuf->buffer) {
-        FILE * fp = fopen( "tmp.gz" , "w" );
-        fwrite( mbuf->buffer , sizeof(char) , mbuf->index , fp );
+        fp = fopen( tempfile , "w" );
+        assert( fp != NULL );
+
+        int idx = 0;
+        while( idx < mbuf->index ) {
+            fwrite( mbuf->buffer + idx , 1 , 1024 , fp );
+            idx += 1024;
+        }
         fclose(fp);
         printf( "Source list saved.\n" );
         free(mbuf->buffer);
         free(mbuf);
 
+        // use gunzip command to unzip the file..
+        _gunzip( tempfile );
+        unlink( tempfile );
+
+        int len = strrchr( tempfile , '.' ) - tempfile;
+        char outfile[32];
+        strncpy( outfile , tempfile , len );
+        *(outfile+len) = '\0';
 
 
+        // XXX: read source and transform here
 
 
+        unlink( outfile );
     }
 
 }
