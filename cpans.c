@@ -4,13 +4,8 @@
 #include <assert.h>
 #include <curl/curl.h>
 #include <unistd.h>
+#include <cpans.h>
 
-
-typedef struct {
-    void * buffer;
-    int  index;
-    int  length;
-} membuf;
 
 size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 {
@@ -101,8 +96,17 @@ int init( char * mirror_site )
 
         // XXX: read source and transform here
 
+        FILE *in = fopen( outfile , "r" );
+        FILE *out = fopen( ".source" , "w+" );
 
-        unlink( outfile );
+        char buffer[1024];
+        while( !feof(in) ) {
+
+        }
+
+        fclose(out);
+        fclose(in);
+        // unlink( outfile );
     }
 
 }
