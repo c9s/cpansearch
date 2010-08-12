@@ -154,7 +154,6 @@ int update()
 
     char * tempfile = "packages.gz";
     membuf_writefile( mbuf , tempfile );
-    membuf_free( mbuf );
     printf( "Source list saved.\n" );
 
     _gunzip( tempfile );
