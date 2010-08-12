@@ -12,6 +12,9 @@
 
 #include "cpans.h"
 
+
+char version[] = "0.1";
+
 size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 {
     // printf(". %d %d\n", size , nmemb);
