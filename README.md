@@ -28,3 +28,19 @@ Supports posix extended regular expression:
     $ cpans "Server$"
 
     $ cpans [A-C][A-C]
+
+
+## TODO
+
+    search and install.
+
+        $ cpans -i AnyEvent::HTTP    # call cpanminus to install the only matched one.
+
+    open browser to search
+
+        $ cpans -w AnyEvent
+
+    open document in browser
+
+        $ cpans -d AnyEvent
+
