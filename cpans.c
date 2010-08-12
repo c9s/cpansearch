@@ -43,7 +43,7 @@ void slist_transform( const char * url , const char * sourcefile )
 
     while( !feof(in) ) {
 
-        moduledata mdata;
+        moduledata_t mdata;
         strcpy( mdata.name , "" );
         strcpy( mdata.version , "" );
         strcpy( mdata.path , "" );
@@ -78,7 +78,7 @@ void slist_transform( const char * url , const char * sourcefile )
         *(mdata.path + (s2-s1) ) = '\0';
 
         // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
-        fwrite( &mdata , sizeof(moduledata) , 1 , out  );
+        fwrite( &mdata , sizeof(moduledata_t) , 1 , out  );
     }
 
     fclose(out);
@@ -115,8 +115,7 @@ int init( const char * mirror_site )
 {
     char url[256];
     membuf * mbuf;
-    strcpy( url , mirror_site );
-    strcat( url , "modules/02packages.details.txt.gz" );
+    sprintf (url, "%s%s", mirror_site, "modules/02packages.details.txt.gz");
 
     printf( "Downloading source from %s\n" , url );
     mbuf = membuf_curl( url );
@@ -136,6 +135,7 @@ int init( const char * mirror_site )
     strncpy( outfile , tempfile , len );
     *(outfile+len) = '\0';
 
+    printf( "Transform source list format.\n" );
     slist_transform( url , outfile );
     return 0;
 }
@@ -174,7 +174,7 @@ int search(const char * pattern)
     char datafile[128];
     regex_t reg;
     FILE * in;
-    moduledata mdata;
+    moduledata_t mdata;
 
     cpansearch_datafile( datafile );
 
@@ -190,8 +190,8 @@ int search(const char * pattern)
     regmatch_t matchlist[1];
 
     while( !feof(in) ) {
-        memset( &mdata , 0 , sizeof(moduledata) );
-        fread( &mdata , sizeof(moduledata) , 1 , in );
+        memset( &mdata , 0 , sizeof(moduledata_t) );
+        fread( &mdata , sizeof(moduledata_t) , 1 , in );
 
         if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
             printf( "%s - %s\n" , mdata.name , mdata.version );
