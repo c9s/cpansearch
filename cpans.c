@@ -205,6 +205,21 @@ int search(const char * pattern)
 
 
 
+void help()
+{
+    printf( "cpans usage:\n" );
+    printf( "  To init source list:\n" );
+    printf( "     cpans -i http://cpan.nctu.edu.tw/ \n" );
+    printf( "     cpans --init http://cpan.nctu.edu.tw/ \n\n" );
+
+    printf( "  To update source list:\n" );
+    printf( "     cpans --update  \n" );
+    printf( "     cpans --u  \n\n" );
+
+    printf( "  To search:\n" );
+    printf( "     cpans [pattern]  \n\n" );
+}
+
 
 int main(int argc, const char *argv[])
 {
@@ -227,22 +242,13 @@ int main(int argc, const char *argv[])
         // XXX:
     }
     else if( argc == 2 && ( strcmp(argv[1],"--help") == 0 || strcmp(argv[1],"-h") == 0 ) ) {
-
-        printf( "cpans usage:\n" );
-        printf( "  To init source list:\n" );
-        printf( "     cpans -i http://cpan.nctu.edu.tw/ \n" );
-        printf( "     cpans --init http://cpan.nctu.edu.tw/ \n\n" );
-
-        printf( "  To update source list:\n" );
-        printf( "     cpans --update  \n" );
-        printf( "     cpans --u  \n\n" );
-
-        printf( "  To search:\n" );
-        printf( "     cpans [pattern]  \n\n" );
-
+        help();
     }
     else if ( argc > 1 ) {
         search( argv[1] );
+    }
+    else {
+        help();
     }
     return 0;
 }
