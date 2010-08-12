@@ -31,10 +31,6 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 }
 
 
-
-
-
-
 char * skipspace( char * s2 ) 
 {
     while( *s2 != ' ' && *s2 != '\0' && *s2 != '\n' ) s2++;
@@ -46,30 +42,14 @@ void cpansearch_datafile(char * path )
     sprintf( path , "%s/.cpansearch.dat" , g_get_home_dir() );
 }
 
-
-void _gunzip( char * file )
-{
-    char cmd[32];
-    sprintf( cmd , "gunzip -f %s" , file );
-    system( cmd );
-}
-
-int init( const char * mirror_site )
+/* return source list file path */
+membuf * download_sourcelist( const char * url )
 {
     membuf * mbuf = (membuf*) malloc( sizeof(membuf) );
     mbuf->index  = 0;
     mbuf->length = 1024 * 24;
     mbuf->buffer = malloc( sizeof(char) * 1024 * 24 );
     memset( mbuf->buffer , 0 , sizeof( sizeof(char) * 1024 * 24 ) );
-
-
-    char url[256];
-//      strcpy( url , "http://cpan.nctu.edu.tw/index.html" );
-
-    strcpy( url , mirror_site );
-    strcat( url , "modules/02packages.details.txt.gz" );
-
-    printf( "Downloading source from %s\n" , url );
 
     CURL *curl;
     CURLcode res;
@@ -85,8 +65,28 @@ int init( const char * mirror_site )
         curl_easy_setopt(curl , CURLOPT_USERAGENT , "cpansearch/1.0" );
         res = curl_easy_perform (curl);
         curl_easy_cleanup (curl);
-        printf("\n");
     }
+    return mbuf;
+}
+
+
+void _gunzip( char * file )
+{
+    char cmd[32];
+    sprintf( cmd , "gunzip -f %s" , file );
+    system( cmd );
+}
+
+int init( const char * mirror_site )
+{
+    char url[256];
+    membuf * mbuf;
+    strcpy( url , mirror_site );
+    strcat( url , "modules/02packages.details.txt.gz" );
+
+    printf( "Downloading source from %s\n" , url );
+    mbuf = download_sourcelist( url );
+
 
     FILE * fp;
     char * tempfile = "packages.gz";
