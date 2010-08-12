@@ -119,6 +119,7 @@ int init( const char * mirror_site )
 
     printf( "Downloading source from %s\n" , url );
     mbuf = membuf_curl( url );
+    printf( "\n" );
 
     char * tempfile = "packages.gz";
     assert( mbuf->buffer != NULL );
