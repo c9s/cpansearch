@@ -43,7 +43,7 @@ void cpansearch_datafile(char * path )
 }
 
 /* return source list file path */
-membuf * download_sourcelist( const char * url )
+membuf * membuf_curl( const char * url )
 {
     membuf * mbuf = (membuf*) malloc( sizeof(membuf) );
     mbuf->index  = 0;
@@ -69,6 +69,107 @@ membuf * download_sourcelist( const char * url )
     return mbuf;
 }
 
+void slist_transform( const char * url , const char * sourcefile )
+{
+    char datafile[128];
+    cpansearch_datafile( datafile );
+
+    FILE *in = fopen( sourcefile , "r" );
+    FILE *out = fopen( datafile , "w+" );
+
+    char buffer[300];
+    int i;
+    for (i = 0; i < 9; i++)
+        fgets( buffer , 300 , in );   // skip 9 lines (header)
+
+    sprintf( buffer, "%s" , url );
+    fwrite( buffer , 1 , 300 , out );
+
+    while( !feof(in) ) {
+
+        moduledata mdata;
+        strcpy( mdata.name , "" );
+        strcpy( mdata.version , "" );
+        strcpy( mdata.path , "" );
+
+        memset( buffer , 0 , 300 );
+        fgets( buffer , 300 , in );
+
+        char * s1, *s2;
+        s1 = buffer;
+        s2 = buffer;
+        s2 = skipspace( s2 );
+        if( s1 == s2 ) break;
+        strncpy( mdata.name , s1 , s2-s1 );
+
+        *(mdata.name + (s2-s1)) = '\0';
+        while( *s2 == ' ' ) s2++;
+
+
+        s1 = s2;
+        s2 = s2;
+        s2 = skipspace( s2 );
+        if( s1 == s2 ) break;
+        strncpy( mdata.version , s1 , s2-s1 );
+        *(mdata.version + (s2-s1)) = '\0';
+        while( *s2 == ' ' ) s2++;
+
+        s1 = s2;
+        s2 = s1;
+        s2 = skipspace( s2 );
+        if( s1 == s2 ) break;
+        strncpy( mdata.path , s1 , s2-s1 );
+        *(mdata.path + (s2-s1) ) = '\0';
+
+        // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
+        fwrite( &mdata , sizeof(moduledata) , 1 , out  );
+    }
+
+    fclose(out);
+    fclose(in);
+    unlink( sourcefile );
+}
+
+char * slist_url()
+{
+    FILE * in;
+    char datafile[128];
+    char url[300];
+
+    cpansearch_datafile( datafile );
+    in = fopen (datafile, "r+");
+    assert( in != NULL );
+
+    fread( url , 1 , 300 , in );
+    printf( "Source list from: %s\n" , url );
+    fclose( in );
+    return strdup(url);
+}
+
+
+
+
+void membuf_free( membuf * mbuf )
+{
+    free( mbuf->buffer );
+    free( mbuf );
+}
+
+void membuf_writefile( membuf * mbuf , const char * file )
+{
+    FILE *fp;
+    int idx = 0;
+
+    fp = fopen( file , "w" );
+    assert( fp != NULL );
+
+    while( idx < mbuf->index ) {
+        fwrite( mbuf->buffer + idx , 1 , 1024 , fp );
+        idx += 1024;
+    }
+    fclose(fp);
+}
+
 
 void _gunzip( char * file )
 {
@@ -85,100 +186,54 @@ int init( const char * mirror_site )
     strcat( url , "modules/02packages.details.txt.gz" );
 
     printf( "Downloading source from %s\n" , url );
-    mbuf = download_sourcelist( url );
+    mbuf = membuf_curl( url );
 
-
-    FILE * fp;
     char * tempfile = "packages.gz";
-    if(mbuf->buffer) {
-        fp = fopen( tempfile , "w" );
-        assert( fp != NULL );
+    assert( mbuf->buffer != NULL );
+    membuf_writefile( mbuf , tempfile );
+    membuf_free( mbuf );
+    printf( "Source list saved.\n" );
 
-        int idx = 0;
-        while( idx < mbuf->index ) {
-            fwrite( mbuf->buffer + idx , 1 , 1024 , fp );
-            idx += 1024;
-        }
-        fclose(fp);
-        printf( "Source list saved.\n" );
-        free(mbuf->buffer);
-        free(mbuf);
+    // use gunzip command to unzip the file..
+    _gunzip( tempfile );
+    unlink( tempfile );
 
-        // use gunzip command to unzip the file..
-        _gunzip( tempfile );
-        unlink( tempfile );
+    int len = strrchr( tempfile , '.' ) - tempfile;
+    char outfile[32];
+    strncpy( outfile , tempfile , len );
+    *(outfile+len) = '\0';
 
-        int len = strrchr( tempfile , '.' ) - tempfile;
-        char outfile[32];
-        strncpy( outfile , tempfile , len );
-        *(outfile+len) = '\0';
-
-        char datafile[128];
-        cpansearch_datafile( datafile );
-
-        FILE *in = fopen( outfile , "r" );
-        FILE *out = fopen( datafile , "w+" );
-
-        char buffer[300];
-
-        int i;
-        for (i = 0; i < 9; i++)
-            fgets( buffer , 300 , in );   // skip 9 lines (header)
-
-        sprintf( buffer, "%s" , url );
-        fwrite( buffer , 1 , 300 , out );
-
-        while( !feof(in) ) {
-
-            moduledata mdata;
-            strcpy( mdata.name , "" );
-            strcpy( mdata.version , "" );
-            strcpy( mdata.path , "" );
-
-            memset( buffer , 0 , 300 );
-            fgets( buffer , 300 , in );
-
-            // printf( "%s\n" , buffer );
-
-            char * s1, *s2;
-            s1 = buffer;
-            s2 = buffer;
-            s2 = skipspace( s2 );
-            if( s1 == s2 ) break;
-            strncpy( mdata.name , s1 , s2-s1 );
-
-            *(mdata.name + (s2-s1)) = '\0';
-            while( *s2 == ' ' ) s2++;
-
-
-            s1 = s2;
-            s2 = s2;
-            s2 = skipspace( s2 );
-            if( s1 == s2 ) break;
-            strncpy( mdata.version , s1 , s2-s1 );
-            *(mdata.version + (s2-s1)) = '\0';
-            while( *s2 == ' ' ) s2++;
-
-            s1 = s2;
-            s2 = s1;
-            s2 = skipspace( s2 );
-            if( s1 == s2 ) break;
-            strncpy( mdata.path , s1 , s2-s1 );
-            *(mdata.path + (s2-s1) ) = '\0';
-
-            // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
-            fwrite( &mdata , sizeof(moduledata) , 1 , out  );
-        }
-
-        fclose(out);
-        fclose(in);
-        unlink( outfile );
-    }
+    slist_transform( url , outfile );
     return 0;
 }
 
+
+
 int update()
 {
+    char * url = slist_url();
+
+    membuf * mbuf = membuf_curl( url );
+    assert( mbuf->buffer != NULL );
+
+    char * tempfile = "packages.gz";
+    membuf_writefile( mbuf , tempfile );
+    membuf_free( mbuf );
+    printf( "Source list saved.\n" );
+
+    _gunzip( tempfile );
+    unlink( tempfile );
+
+    int len = strrchr( tempfile , '.' ) - tempfile;
+    char outfile[32];
+    strncpy( outfile , tempfile , len );
+    *(outfile+len) = '\0';
+
+    slist_transform( url , outfile );
+
+
+    membuf_free( mbuf );
+    free(url);
     return 0;
 }
 
@@ -229,7 +284,7 @@ int main(int argc, const char *argv[])
     else if( argc == 2 && strcmp(argv[1],"--update") == 0 ) {
         printf( "Updating package list from mirror\n" );
         // update package list
-
+        update();
     }
     else if( argc == 2 && strcmp(argv[1],"--recent") == 0 ) {
         printf( "Searching packages from recent index\n" );
