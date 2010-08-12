@@ -136,8 +136,10 @@ int init( const char * mirror_site )
     strncpy( outfile , tempfile , len );
     *(outfile+len) = '\0';
 
-    printf( "Transform source list format.\n" );
+    printf( "Transforming source list format.\n" );
     slist_transform( url , outfile );
+
+    printf( "Done\n" );
     return 0;
 }
 
