@@ -119,13 +119,13 @@ int init( const char * mirror_site )
 
     printf( "Downloading source from %s\n" , url );
     mbuf = membuf_curl( url );
-    printf( "\n" );
 
     char * tempfile = "packages.gz";
     assert( mbuf->buffer != NULL );
     membuf_writefile( mbuf , tempfile );
     membuf_free( mbuf );
-    printf( "Source list saved.\n" );
+
+    printf( "\nSource list saved.\n" );
 
     // use gunzip command to unzip the file..
     _gunzip( tempfile );
@@ -154,7 +154,7 @@ int update()
 
     char * tempfile = "packages.gz";
     membuf_writefile( mbuf , tempfile );
-    printf( "Source list saved.\n" );
+    printf( "\nSource list saved.\n" );
 
     _gunzip( tempfile );
     unlink( tempfile );
