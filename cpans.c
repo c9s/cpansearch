@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <curl/curl.h>
 #include <unistd.h>
 
 #include <stdarg.h>
@@ -10,28 +9,10 @@
 #include <regex.h>
 #include <glib.h>
 
+#include "membuf.h"
 #include "cpans.h"
 
 char version[] = "0.1";
-
-size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
-{
-    // printf(". %d %d\n", size , nmemb);
-    printf( "." );
-
-    membuf * mbuf = (membuf*) userp;
-
-    if( mbuf->index + nmemb > mbuf->length ) {
-        mbuf->length += 1024 * 1000;
-        mbuf->buffer = (void*) realloc( mbuf->buffer , mbuf->length * sizeof(char) );
-    }
-
-    memcpy( mbuf->buffer + mbuf->index , buffer,
-            nmemb * size );
-    mbuf->index += nmemb * size;
-    return nmemb;
-}
-
 
 char * skipspace( char * s2 ) 
 {
@@ -42,33 +23,6 @@ char * skipspace( char * s2 )
 void cpansearch_datafile(char * path )
 {
     sprintf( path , "%s/.cpansearch.dat" , g_get_home_dir() );
-}
-
-/* return source list file path */
-membuf * membuf_curl( const char * url )
-{
-    membuf * mbuf = (membuf*) malloc( sizeof(membuf) );
-    mbuf->index  = 0;
-    mbuf->length = 1024 * 24;
-    mbuf->buffer = malloc( sizeof(char) * 1024 * 24 );
-    memset( mbuf->buffer , 0 , sizeof( sizeof(char) * 1024 * 24 ) );
-
-    CURL *curl;
-    CURLcode res;
-
-    curl_global_init( CURL_GLOBAL_ALL );
-
-    curl = curl_easy_init ();
-    if (curl)
-    {
-        curl_easy_setopt(curl , CURLOPT_URL , url );
-        curl_easy_setopt(curl , CURLOPT_WRITEFUNCTION,  write_data);
-        curl_easy_setopt(curl , CURLOPT_WRITEDATA , (void *) mbuf );
-        curl_easy_setopt(curl , CURLOPT_USERAGENT , "cpansearch/1.0" );
-        res = curl_easy_perform (curl);
-        curl_easy_cleanup (curl);
-    }
-    return mbuf;
 }
 
 void slist_transform( const char * url , const char * sourcefile )
@@ -150,29 +104,6 @@ char * slist_url()
 
 
 
-
-void membuf_free( membuf * mbuf )
-{
-    free( mbuf->buffer );
-    free( mbuf );
-}
-
-void membuf_writefile( membuf * mbuf , const char * file )
-{
-    FILE *fp;
-    int idx = 0;
-
-    fp = fopen( file , "w" );
-    assert( fp != NULL );
-
-    while( idx < mbuf->index ) {
-        fwrite( mbuf->buffer + idx , 1 , 1024 , fp );
-        idx += 1024;
-    }
-    fclose(fp);
-}
-
-
 void _gunzip( char * file )
 {
     char cmd[32];
@@ -233,7 +164,6 @@ int update()
 
     slist_transform( url , outfile );
 
-
     membuf_free( mbuf );
     free(url);
     return 0;
@@ -285,16 +215,15 @@ int main(int argc, const char *argv[])
     }
     else if( argc == 2 && strcmp(argv[1],"--update") == 0 ) {
         printf( "Updating package list from mirror\n" );
-        // update package list
         update();
     }
     else if( argc == 2 && strcmp(argv[1],"--recent") == 0 ) {
         printf( "Searching packages from recent index\n" );
         // update package list
 
+        // XXX:
     }
     else if ( argc > 1 ) {
-        // search
         search( argv[1] );
     }
     return 0;

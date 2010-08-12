@@ -9,11 +9,6 @@ typedef struct {
     char path[96];
 } moduledata;
 
-typedef struct {
-    void * buffer;
-    int  index;
-    int  length;
-} membuf;
 
 
 
