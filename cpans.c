@@ -211,11 +211,12 @@ int main(int argc, const char *argv[])
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
-    if( argc == 3 && strcmp(argv[1],"--init") == 0  ) {
+    if( argc == 3 && ( strcmp(argv[1],"--init") == 0 ||  strcmp(argv[1],"-i") ) ) {
         printf( "Initializing package list from mirror\n" );
         init( argv[2] );
     }
-    else if( argc == 2 && strcmp(argv[1],"--update") == 0 ) {
+    else if( argc == 2 && ( strcmp(argv[1],"--update") == 0 || strcmp(argv[1],"-u") == 0 ) )
+    {
         printf( "Updating package list from mirror\n" );
         update();
     }
@@ -224,6 +225,21 @@ int main(int argc, const char *argv[])
         // update package list
 
         // XXX:
+    }
+    else if( argc == 2 && ( strcmp(argv[1],"--help") == 0 || strcmp(argv[1],"-h") == 0 ) ) {
+
+        printf( "cpans usage:\n" );
+        printf( "  To init source list:\n" );
+        printf( "     cpans -i http://cpan.nctu.edu.tw/ \n" );
+        printf( "     cpans --init http://cpan.nctu.edu.tw/ \n\n" );
+
+        printf( "  To update source list:\n" );
+        printf( "     cpans --update  \n" );
+        printf( "     cpans --u  \n\n" );
+
+        printf( "  To search:\n" );
+        printf( "     cpans [pattern]  \n\n" );
+
     }
     else if ( argc > 1 ) {
         search( argv[1] );
