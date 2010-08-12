@@ -4,7 +4,10 @@
 #include <assert.h>
 #include <curl/curl.h>
 #include <unistd.h>
-#include <cpans.h>
+#include "cpans.h"
+
+
+
 
 
 size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
@@ -27,14 +30,24 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 
 
 
+
+
+
+char * skipspace( char * s2 ) 
+{
+    while( *s2 != ' ' && *s2 != '\0' && *s2 != '\n' ) s2++;
+    return s2;
+}
+
+
 void _gunzip( char * file )
 {
-    char cmd[64];
-    sprintf( cmd , "gunzip %s" , file );
+    char cmd[32];
+    sprintf( cmd , "gunzip -f %s" , file );
     system( cmd );
 }
 
-int init( char * mirror_site )
+int init( const char * mirror_site )
 {
     membuf * mbuf = (membuf*) malloc( sizeof(membuf) );
     mbuf->index  = 0;
@@ -99,27 +112,70 @@ int init( char * mirror_site )
         FILE *in = fopen( outfile , "r" );
         FILE *out = fopen( ".source" , "w+" );
 
-        char buffer[1024];
+        char buffer[300];
+
+        int i;
+        for (i = 0; i < 9; i++)
+            fgets( buffer , 300 , in );   // skip 9 lines (header)
+
+
         while( !feof(in) ) {
 
+            moduledata mdata;
+            strcpy( mdata.name , "" );
+            strcpy( mdata.version , "" );
+            strcpy( mdata.path , "" );
+
+            memset( buffer , 0 , 300 );
+            fgets( buffer , 300 , in );
+
+            // printf( "%s\n" , buffer );
+
+            char * s1, *s2;
+            s1 = buffer;
+            s2 = buffer;
+            s2 = skipspace( s2 );
+            if( s1 == s2 ) break;
+            strncpy( mdata.name , s1 , s2-s1 );
+
+            *(mdata.name + (s2-s1)) = '\0';
+            while( *s2 == ' ' ) s2++;
+
+
+            s1 = s2;
+            s2 = s2;
+            s2 = skipspace( s2 );
+            if( s1 == s2 ) break;
+            strncpy( mdata.version , s1 , s2-s1 );
+            *(mdata.version + (s2-s1)) = '\0';
+            while( *s2 == ' ' ) s2++;
+
+            s1 = s2;
+            s2 = s1;
+            s2 = skipspace( s2 );
+            if( s1 == s2 ) break;
+            strncpy( mdata.path , s1 , s2-s1 );
+            *(mdata.path + (s2-s1) ) = '\0';
+
+            // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
+            fwrite( &mdata , sizeof(moduledata) , 1 , out  );
         }
 
         fclose(out);
         fclose(in);
-        // unlink( outfile );
+        unlink( outfile );
     }
-
+    return 0;
 }
 
 int update()
 {
-
     return 0;
 }
 
 int search(char * pattern)
 {
-
+    return 0;
 }
 
 
@@ -132,7 +188,7 @@ int main(int argc, const char *argv[])
 
     if( argc == 3 && strcmp(argv[1],"--init") == 0  ) {
         printf( "Initializing package list from mirror\n" );
-        init( "http://cpan.nctu.edu.tw/" );
+        init( argv[2] );
     }
     else if( argc == 2 && strcmp(argv[1],"--update") == 0 ) {
         printf( "Updating package list from mirror\n" );
