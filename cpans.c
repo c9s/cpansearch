@@ -4,11 +4,13 @@
 #include <assert.h>
 #include <curl/curl.h>
 #include <unistd.h>
+
+#include <stdarg.h>
+#include <sys/types.h>
+#include <regex.h>
+#include <glib.h>
+
 #include "cpans.h"
-
-
-
-
 
 size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 {
@@ -37,6 +39,11 @@ char * skipspace( char * s2 )
 {
     while( *s2 != ' ' && *s2 != '\0' && *s2 != '\n' ) s2++;
     return s2;
+}
+
+void cpansearch_datafile(char * path )
+{
+    sprintf( path , "%s/.cpansearch.dat" , g_get_home_dir() );
 }
 
 
@@ -106,11 +113,11 @@ int init( const char * mirror_site )
         strncpy( outfile , tempfile , len );
         *(outfile+len) = '\0';
 
-
-        // XXX: read source and transform here
+        char datafile[128];
+        cpansearch_datafile( datafile );
 
         FILE *in = fopen( outfile , "r" );
-        FILE *out = fopen( ".source" , "w+" );
+        FILE *out = fopen( datafile , "w+" );
 
         char buffer[300];
 
@@ -118,6 +125,8 @@ int init( const char * mirror_site )
         for (i = 0; i < 9; i++)
             fgets( buffer , 300 , in );   // skip 9 lines (header)
 
+        sprintf( buffer, "%s" , url );
+        fwrite( buffer , 1 , 300 , out );
 
         while( !feof(in) ) {
 
@@ -173,8 +182,35 @@ int update()
     return 0;
 }
 
-int search(char * pattern)
+int search(const char * pattern)
 {
+    char datafile[128];
+    regex_t reg;
+    FILE * in;
+    moduledata mdata;
+
+    cpansearch_datafile( datafile );
+
+    in = fopen (datafile, "r+");
+    assert( in != NULL );
+
+    char url[300];
+    fread( url , 1 , 300 , in );
+    printf( "Source list from: %s\n" , url );
+
+    assert( regcomp( &reg , pattern , REG_NOSUB | REG_EXTENDED ) == 0 );
+
+    regmatch_t matchlist[1];
+
+    while( !feof(in) ) {
+        memset( &mdata , 0 , sizeof(moduledata) );
+        fread( &mdata , sizeof(moduledata) , 1 , in );
+
+        if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
+            printf( "%s - %s\n" , mdata.name , mdata.version );
+        }
+    }
+    fclose(in);
     return 0;
 }
 
@@ -202,8 +238,7 @@ int main(int argc, const char *argv[])
     }
     else if ( argc > 1 ) {
         // search
-
-
+        search( argv[1] );
     }
     return 0;
 }
