@@ -7,6 +7,10 @@ modules.
 
 ## To install
 
+    **REQUIREMENT**
+        curl
+        glib
+
     $ make install
 
 ## To initialize source list datafile.
