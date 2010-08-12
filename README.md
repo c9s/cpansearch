@@ -44,3 +44,5 @@ Supports posix extended regular expression:
 
         $ cpans -d AnyEvent
 
+    ncurses UI support
+
