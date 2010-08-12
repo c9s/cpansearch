@@ -11,5 +11,9 @@ all: $(PROG)
 $(PROG): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(PROG)
 
+install: $(PROG)
+	mkdir -p /usr/bin/
+	cp $(PROG) /usr/bin/
+
 clean:	
 	rm -rf $(PROG) $(OBJS)
