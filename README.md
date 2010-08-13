@@ -37,6 +37,7 @@ modules.
     # this will autodetect local mirror from .minicpanrc
     $ cpans --fetch
 
+    # the same
     $ cpans -f
 
 ## To update list
