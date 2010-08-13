@@ -4,7 +4,7 @@
 
 
 typedef struct {
-    char name[50];
+    char name[60];
     char version[12];
     char path[200];
 } moduledata_t;

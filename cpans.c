@@ -53,6 +53,7 @@ void slist_transform( const char * url , const char * sourcefile )
     fwrite( buffer , 1 , 300 , out );
 
     int cnt = 0;
+    char * s1, *s2;
     while( !feof(in) ) {
 
         moduledata_t mdata;
@@ -63,7 +64,6 @@ void slist_transform( const char * url , const char * sourcefile )
         if( strlen(buffer) == 0 )
             break;
 
-        char * s1, *s2;
         s1 = buffer;
         s2 = buffer;
         s2 = skipword( s2 );
@@ -75,8 +75,11 @@ void slist_transform( const char * url , const char * sourcefile )
         s2 = s2;
         s2 = skipword( s2 );
         if( s1 == s2 ) break;
-        memcpy( mdata.version , s1 , s2-s1 );
+        memcpy( mdata.version , s1 , (s2-s1) );
+        if( strcmp(mdata.version ,"undef") == 0 )
+            strcpy(mdata.version,"0");
         s2 = skipspace( s2 );
+
 
         s1 = s2;
         s2 = s1;
