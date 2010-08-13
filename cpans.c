@@ -307,7 +307,12 @@ int main(int argc, const char *argv[])
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
-    if( argc >= 2 && ( strcmp(argv[1],"--init") == 0 ) ) {
+    if( argc >= 2 && ( 
+                strcmp(argv[1],"--init") == 0
+            ||  strcmp(argv[1],"--fetch") == 0
+            ||  strcmp(argv[1],"-f") == 0
+        ) ) 
+    {
         if( argc == 3 ) {
             printf( "Initializing package list from mirror\n" );
             init( (char*)argv[2] );

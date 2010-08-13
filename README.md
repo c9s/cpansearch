@@ -13,16 +13,37 @@ modules.
 
     $ make install
 
+## Usage
+
+
+--init [uri] | --fetch [uri] | -i [uri]
+
+> initialize a source list from a specified uri:
+
+--update | -u
+    
+> update source list data.
+
+-i
+    
+> ignore case
+
+# Example
+
 ## To initialize source list datafile.
 
-    $ cpans --init http://cpan.nctu.edu.tw/
+    $ cpans --fetch http://cpan.nctu.edu.tw/
 
     # this will autodetect local mirror from .minicpanrc
-    $ cpans --init
+    $ cpans --fetch
+
+    $ cpans -f
 
 ## To update list
 
     $ cpans --update
+
+    $ cpans -u
 
 ## To search modules
 
