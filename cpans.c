@@ -32,8 +32,8 @@ void slist_transform( const char * url , const char * sourcefile )
     char datafile[128];
     cpansearch_datafile( datafile );
 
-    FILE *in = fopen( sourcefile , "r" );
-    FILE *out = fopen( datafile , "w+" );
+    FILE *in = fopen( sourcefile , "rb" );
+    FILE *out = fopen( datafile , "wb+" );
 
     char buffer[300];
     int i;
@@ -95,7 +95,7 @@ char * slist_url()
     char url[300];
 
     cpansearch_datafile( datafile );
-    in = fopen (datafile, "r+");
+    in = fopen (datafile, "rb+");
     assert( in != NULL );
 
     fread( url , 1 , 300 , in );
@@ -187,7 +187,7 @@ int search(const char * pattern)
 
     cpansearch_datafile( datafile );
 
-    in = fopen (datafile, "r+");
+    in = fopen (datafile, "rb+");
     assert( in != NULL );
 
     char url[300];

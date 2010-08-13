@@ -72,7 +72,7 @@ void membuf_writefile( membuf * mbuf , const char * file )
     FILE *fp;
     int idx = 0;
 
-    fp = fopen( file , "w" );
+    fp = fopen( file , "wb" );
     assert( fp != NULL );
 
     while( idx < mbuf->index ) {
