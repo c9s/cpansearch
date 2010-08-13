@@ -14,6 +14,7 @@
 #include "cpans.h"
 
 char version[] = "0.1";
+char ignore_case = 0;
 
 char * skipword( char * s2 )
 {
@@ -216,7 +217,12 @@ int search(const char * pattern)
     url = smeta.uri;
     printf( "Source list from: %s\n" , url );
 
-    assert( regcomp( &reg , pattern , REG_NOSUB | REG_EXTENDED ) == 0 );
+    int flag = REG_NOSUB | REG_EXTENDED;
+
+    if( ignore_case )
+        flag = flag | REG_ICASE;
+
+    assert( regcomp( &reg , pattern , flag ) == 0 );
 
     regmatch_t matchlist[1];
 
@@ -301,7 +307,7 @@ int main(int argc, const char *argv[])
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
-    if( argc >= 2 && ( strcmp(argv[1],"--init") == 0 || strcmp(argv[1],"-i") == 0 ) ) {
+    if( argc >= 2 && ( strcmp(argv[1],"--init") == 0 ) ) {
         if( argc == 3 ) {
             printf( "Initializing package list from mirror\n" );
             init( (char*)argv[2] );
@@ -325,7 +331,11 @@ int main(int argc, const char *argv[])
         help();
     }
     else if ( argc > 1 ) {
-        search( argv[1] );
+        if( strcmp(argv[1],"-i") == 0 && argc > 2 ) {
+            ignore_case = 1;
+            search( argv[2] );
+        }
+        else search( argv[1] );
     }
     else {
         help();
