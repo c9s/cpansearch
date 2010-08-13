@@ -8,15 +8,25 @@
 #include <sys/types.h>
 #include <regex.h>
 #include <glib.h>
+#include <ctype.h>
 
 #include "membuf.h"
 #include "cpans.h"
 
 char version[] = "0.1";
 
+
+char * skipword( char * s2 )
+{
+    while( isgraph(*s2) )
+        s2++;
+    return s2;
+}
+
 char * skipspace( char * s2 ) 
 {
-    while( *s2 != ' ' && *s2 != '\0' && *s2 != '\n' ) s2++;
+    while( *s2 == ' ' )
+        s2++;
     return s2;
 }
 
@@ -43,45 +53,44 @@ void slist_transform( const char * url , const char * sourcefile )
     sprintf( buffer, "%s" , url );
     fwrite( buffer , 1 , 300 , out );
 
+    int cnt = 0;
     while( !feof(in) ) {
 
         moduledata_t mdata;
-        strcpy( mdata.name , "" );
-        strcpy( mdata.version , "" );
-        strcpy( mdata.path , "" );
-
         memset( buffer , 0 , 300 );
+        memset( &mdata , 0 , sizeof(moduledata_t) );
         fgets( buffer , 300 , in );
+
+        if( strlen(buffer) == 0 )
+            break;
 
         char * s1, *s2;
         s1 = buffer;
         s2 = buffer;
-        s2 = skipspace( s2 );
+        s2 = skipword( s2 );
         if( s1 == s2 ) break;
-        strncpy( mdata.name , s1 , s2-s1 );
-
-        *(mdata.name + (s2-s1)) = '\0';
-        while( *s2 == ' ' ) s2++;
-
+        memcpy( mdata.name , s1 , (s2-s1));
+        s2 = skipspace( s2 );
 
         s1 = s2;
         s2 = s2;
-        s2 = skipspace( s2 );
+        s2 = skipword( s2 );
         if( s1 == s2 ) break;
-        strncpy( mdata.version , s1 , s2-s1 );
-        *(mdata.version + (s2-s1)) = '\0';
-        while( *s2 == ' ' ) s2++;
+        memcpy( mdata.version , s1 , s2-s1 );
+        s2 = skipspace( s2 );
 
         s1 = s2;
         s2 = s1;
-        s2 = skipspace( s2 );
+        s2 = skipword( s2 );
         if( s1 == s2 ) break;
-        strncpy( mdata.path , s1 , s2-s1 );
-        *(mdata.path + (s2-s1) ) = '\0';
+        memcpy( mdata.path , s1 , (s2-s1) * sizeof(char) );
 
         // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
         fwrite( &mdata , sizeof(moduledata_t) , 1 , out  );
+        cnt++;
     }
+
+    printf( "%d packages recorded.\n" , cnt );
 
     fclose(out);
     fclose(in);
