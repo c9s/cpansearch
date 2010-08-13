@@ -7,9 +7,9 @@ modules.
 
 ## To install
 
-    **REQUIREMENT**
-        curl
-        glib
+**REQUIREMENT**
+*curl
+*glib
 
     $ make install
 
@@ -35,6 +35,9 @@ Supports posix extended regular expression:
     $ cpans "Server$"
 
     $ cpans [A-C][A-C]
+
+    # to ignore case
+    $ cpans -i server
 
 
 ## PLATFORM
