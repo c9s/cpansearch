@@ -8,13 +8,30 @@ modules.
 ## To install
 
 **REQUIREMENT**
-*curl
-*glib
 
+* curl
+
+* glib
+
+### Binary
+
+    $ wget http://github.com/c9s/cpansearch/raw/master/binary/cpans-linux-i386 -O cpans
+    $ chmod +x cpans
+    $ cp cpans ~/bin/
+
+### Build - For debian-based system:
+
+    $ sudo apt-get install libcurl4-openssl-dev libglib2.0-dev
+    $ make install
+
+### Build - For mac users:
+
+install from macport:
+
+    $ sudo port install curl glib2
     $ make install
 
 ## Usage
-
 
 --init [uri] | --fetch [uri] | -i [uri]
 
