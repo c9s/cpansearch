@@ -17,6 +17,9 @@ modules.
 
     $ cpans --init http://cpan.nctu.edu.tw/
 
+    # this will autodetect local mirror from .minicpanrc
+    $ cpans --init
+
 ## To update list
 
     $ cpans --update
