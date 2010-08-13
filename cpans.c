@@ -39,6 +39,7 @@ void cpansearch_datafile(char * path )
 void slist_transform( const char * url , const char * sourcefile )
 {
     char datafile[128];
+    sourcemeta_t smeta;
     cpansearch_datafile( datafile );
 
     FILE *in = fopen( sourcefile , "rb" );
@@ -49,8 +50,10 @@ void slist_transform( const char * url , const char * sourcefile )
     for (i = 0; i < 9; i++)
         fgets( buffer , 300 , in );   // skip 9 lines (header)
 
-    sprintf( buffer, "%s" , url );
-    fwrite( buffer , 1 , 300 , out );
+    memset( &smeta , 0 , sizeof( sourcemeta_t ));
+    sprintf( smeta.uri , "%s" , url );
+    fwrite( &smeta , sizeof(sourcemeta_t) , 1 , out );
+
 
     int cnt = 0;
     char * s1, *s2;
@@ -80,7 +83,6 @@ void slist_transform( const char * url , const char * sourcefile )
             strcpy(mdata.version,"0");
         s2 = skipspace( s2 );
 
-
         s1 = s2;
         s2 = s1;
         s2 = skipword( s2 );
@@ -99,20 +101,23 @@ void slist_transform( const char * url , const char * sourcefile )
     unlink( sourcefile );
 }
 
+
+
 char * slist_url()
 {
     FILE * in;
     char datafile[128];
-    char url[300];
 
     cpansearch_datafile( datafile );
     in = fopen (datafile, "rb+");
     assert( in != NULL );
 
-    fread( url , 1 , 300 , in );
-    printf( "Source list from: %s\n" , url );
+
+    sourcemeta_t smeta;
+    fread( &smeta , sizeof(sourcemeta_t) , 1 , in );
+    printf( "Source list from: %s\n" , smeta.uri );
     fclose( in );
-    return strdup(url);
+    return strdup(smeta.uri);
 }
 
 
@@ -189,20 +194,26 @@ int update()
     return 0;
 }
 
+
+
+
 int search(const char * pattern)
 {
+
     char datafile[128];
     regex_t reg;
     FILE * in;
     moduledata_t mdata;
+    sourcemeta_t smeta;
+    char * url;
 
     cpansearch_datafile( datafile );
 
     in = fopen (datafile, "rb+");
     assert( in != NULL );
 
-    char url[300];
-    fread( url , 1 , 300 , in );
+    fread( &smeta , sizeof(sourcemeta_t) , 1 , in );
+    url = smeta.uri;
     printf( "Source list from: %s\n" , url );
 
     assert( regcomp( &reg , pattern , REG_NOSUB | REG_EXTENDED ) == 0 );

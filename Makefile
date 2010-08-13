@@ -10,6 +10,10 @@ all: $(PROG)
 
 $(PROG): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(PROG)
+	@echo "----------------"
+	@echo "When you upgrade cpans, please update the source data again with -i option:"
+	@echo "   cpans -i http://search.cpan.org/"
+	@echo "----------------"
 
 install: $(PROG)
 	mkdir -p /usr/bin/

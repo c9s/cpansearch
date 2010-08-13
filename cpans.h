@@ -2,7 +2,7 @@
 #define __CPANS_H__
 
 typedef struct {
-    char listuri[80];
+    char uri[80];
     float version;
     time_t updatetime;
 } sourcemeta_t;
