@@ -37,6 +37,11 @@ Supports posix extended regular expression:
     $ cpans [A-C][A-C]
 
 
+## PLATFORM
+
+    * unix-like
+    * win32   (thanks to @mattn)
+
 ## TODO
 
     search and install.
