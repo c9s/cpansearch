@@ -25,6 +25,8 @@ void cpansearch_datafile(char * path )
     sprintf( path , "%s/.cpansearch.dat" , g_get_home_dir() );
 }
 
+
+
 void slist_transform( const char * url , const char * sourcefile )
 {
     char datafile[128];
@@ -111,10 +113,15 @@ void _gunzip( char * file )
     system( cmd );
 }
 
-int init( const char * mirror_site )
+int init( char * mirror_site )
 {
     char url[256];
     membuf * mbuf;
+
+    // check mirror_site url , should be end with "/"
+    if( * (mirror_site + strlen(mirror_site) - 1 ) != '/' )
+        strcat(mirror_site , "/");
+
     sprintf (url, "%s%s", mirror_site, "modules/02packages.details.txt.gz");
 
     printf( "Downloading source from %s\n" , url );
@@ -221,14 +228,65 @@ void help()
 }
 
 
+void init_local( char * localpath )
+{
+
+
+
+}
+
+
+void init_from_minicpanrc()
+{
+    char minicpanrc[64];
+    sprintf( minicpanrc , "%s/.minicpanrc" , g_get_home_dir() );
+
+    if (!g_file_test (minicpanrc, G_FILE_TEST_EXISTS))
+        return;
+
+
+
+    FILE *rc = fopen( minicpanrc , "r" );
+    char buffer[50] = {0};
+    char localpath[64] = {0};
+
+    strcat( localpath , "file://" );
+
+    while(!feof(rc)){
+        fgets( buffer , 50 , rc );
+        if( strstr(buffer,"local:") == buffer ) {
+            char * c = strchr(buffer,'/');
+            strcat( localpath , c );
+
+            // chomp
+            *(localpath + strlen(localpath) - 1) = '\0';
+            break;
+        }
+    }
+    fclose(rc);
+    assert( localpath != NULL );
+
+    if( * (localpath + strlen(localpath) - 1 ) != '/' )
+        strcat(localpath , "/");
+
+    printf( "Found minicpanrc: %s\n" , localpath );
+    init( localpath );
+}
+
+
 int main(int argc, const char *argv[])
 {
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
-    if( argc == 3 && ( strcmp(argv[1],"--init") == 0 ||  strcmp(argv[1],"-i") ) ) {
-        printf( "Initializing package list from mirror\n" );
-        init( argv[2] );
+    if( argc >= 2 && ( strcmp(argv[1],"--init") == 0 || strcmp(argv[1],"-i") ) ) {
+        if( argc == 3 ) {
+            printf( "Initializing package list from mirror\n" );
+            init( (char*)argv[2] );
+        }
+        else if( argc == 2 ) {
+            init_from_minicpanrc();
+        }
     }
     else if( argc == 2 && ( strcmp(argv[1],"--update") == 0 || strcmp(argv[1],"-u") == 0 ) )
     {
