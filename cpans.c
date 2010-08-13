@@ -15,7 +15,6 @@
 
 char version[] = "0.1";
 
-
 char * skipword( char * s2 )
 {
     while( isgraph(*s2) )
@@ -83,7 +82,7 @@ void slist_transform( const char * url , const char * sourcefile )
         s2 = s1;
         s2 = skipword( s2 );
         if( s1 == s2 ) break;
-        memcpy( mdata.path , s1 , (s2-s1) * sizeof(char) );
+        memcpy( mdata.path , s1 , (s2-s1) );
 
         // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
         fwrite( &mdata , sizeof(moduledata_t) , 1 , out  );
