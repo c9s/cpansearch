@@ -69,6 +69,8 @@ Supports posix extended regular expression:
 
 ## TODO
 
+    search installed packages.
+
     search and install.
 
         $ cpans -i AnyEvent::HTTP    # call cpanminus to install the only matched one.
@@ -82,4 +84,5 @@ Supports posix extended regular expression:
         $ cpans -d AnyEvent
 
     ncurses UI support
+
 
