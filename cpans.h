@@ -8,7 +8,7 @@ typedef struct {
 } sourcemeta_t;
 
 typedef struct {
-    char name[60];
+    char name[100];
     char version[12];
     char path[200];
 } moduledata_t;

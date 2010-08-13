@@ -218,7 +218,6 @@ int search(const char * pattern)
     printf( "Source list from: %s\n" , url );
 
     int flag = REG_NOSUB | REG_EXTENDED;
-
     if( ignore_case )
         flag = flag | REG_ICASE;
 
@@ -231,7 +230,7 @@ int search(const char * pattern)
         fread( &mdata , sizeof(moduledata_t) , 1 , in );
 
         if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
-            printf( "%s - %s\n" , mdata.name , mdata.version );
+            printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , mdata.path );
         }
     }
     fclose(in);
