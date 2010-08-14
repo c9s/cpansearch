@@ -321,11 +321,11 @@ int main(int argc, char **argv)
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
+
+    int optbind = 0;
     while( (thisopt = getopt_long(argc, argv, "if:s:u:rh", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
-        case 0:
-          break;
 
         case 'f':
           if (optarg != NULL) {
@@ -333,32 +333,38 @@ int main(int argc, char **argv)
           } else {
             init_from_minicpanrc();
           }
+          return 0;
 
         case 'i':
           ignore_case = 1;
-          break;
-
-        case 's':
-          search(optarg);
+          ++optbind;
           break;
 
         case 'u':
           puts("Update package list from mirror");
           update();
-          break;
+          return 0;
 
         case 'r':
           puts("Searching packages from recent index");
           // update package list
-          break;
+          return 0;
 
         case 'h':
           help();
-          break;
-
+          return 0;
       }
 
     }
 
+    int index;
+    for (index = optind; index < argc; index++) {
+        search(argv[index]);
+        return 0;
+    }
+
     return 0;
 }
+
+
+
