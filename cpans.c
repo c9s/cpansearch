@@ -3,6 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include <stdarg.h>
 #include <sys/types.h>
@@ -300,49 +301,64 @@ void init_from_minicpanrc()
     init( localpath );
 }
 
+/* getopt setting start */
+static int option_index = 0;
+static int thisopt = 0;
 
-int main(int argc, const char *argv[])
+static struct option long_options[] = {
+  { "fetch"     , required_argument, 0 , 'f' },
+  { "init"      , required_argument, 0 , 'f' },
+  { "search"    , required_argument, 0 , 's' },
+  { "update"    , required_argument, 0 , 'u' },
+  { "recent"    , no_argument      , 0 , 'r' },
+  { "help"      , no_argument      , 0 , 'h' },
+};
+/* getopt setting end */
+
+
+int main(int argc, char **argv)
 {
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
-    if( argc >= 2 && ( 
-                strcmp(argv[1],"--init") == 0
-            ||  strcmp(argv[1],"--fetch") == 0
-            ||  strcmp(argv[1],"-f") == 0
-        ) ) 
-    {
-        if( argc == 3 ) {
-            printf( "Initializing package list from mirror\n" );
-            init( (char*)argv[2] );
-        }
-        else if( argc == 2 ) {
-            init_from_minicpanrc();
-        }
-    }
-    else if( argc == 2 && ( strcmp(argv[1],"--update") == 0 || strcmp(argv[1],"-u") == 0 ) )
-    {
-        printf( "Updating package list from mirror\n" );
-        update();
-    }
-    else if( argc == 2 && strcmp(argv[1],"--recent") == 0 ) {
-        printf( "Searching packages from recent index\n" );
-        // update package list
+    while( (thisopt = getopt_long(argc, argv, "if:s:u:rh", long_options, &option_index)) != -1 ) {
 
-        // XXX:
+      switch (thisopt) {
+        case 0:
+          break;
+
+        case 'f':
+          if (optarg != NULL) {
+            init( (char*)optarg);
+          } else {
+            init_from_minicpanrc();
+          }
+
+        case 'i':
+          ignore_case = 1;
+          break;
+
+        case 's':
+          search(optarg);
+          break;
+
+        case 'u':
+          puts("Update package list from mirror");
+          update();
+          break;
+
+        case 'r':
+          puts("Searching packages from recent index");
+          // update package list
+          break;
+
+        case 'h':
+          help();
+          break;
+
+      }
+
     }
-    else if( argc == 2 && ( strcmp(argv[1],"--help") == 0 || strcmp(argv[1],"-h") == 0 ) ) {
-        help();
-    }
-    else if ( argc > 1 ) {
-        if( strcmp(argv[1],"-i") == 0 && argc > 2 ) {
-            ignore_case = 1;
-            search( argv[2] );
-        }
-        else search( argv[1] );
-    }
-    else {
-        help();
-    }
+
     return 0;
 }
