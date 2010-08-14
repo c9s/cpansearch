@@ -339,8 +339,6 @@ int main(int argc, char **argv)
     while( (thisopt = getopt_long(argc, argv, "if:s:u:rh", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
-        case 0:
-          break;
 
         case 'f':
           if (optarg != NULL) {
@@ -381,7 +379,6 @@ int main(int argc, char **argv)
         search(argv[index]);
         return 0;
     }
-
 
     return 0;
 }
