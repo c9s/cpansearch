@@ -309,7 +309,7 @@ static struct option long_options[] = {
   { "fetch"     , required_argument, 0 , 'f' },
   { "init"      , required_argument, 0 , 'f' },
   { "search"    , required_argument, 0 , 's' },
-  { "update"    , required_argument, 0 , 'u' },
+  { "update"    , no_argument,      0 , 'u' },
   { "recent"    , no_argument      , 0 , 'r' },
   { "help"      , no_argument      , 0 , 'h' },
 };
