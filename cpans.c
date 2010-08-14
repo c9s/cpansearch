@@ -335,11 +335,12 @@ int main(int argc, char **argv)
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
-
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:u:rh:l", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:s:u:rh", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
+        case 0:
+          break;
 
         case 'f':
           if (optarg != NULL) {
@@ -357,7 +358,6 @@ int main(int argc, char **argv)
         case 'l':
           fullurl = 1;
           ++optbind;
-          break;
 
         case 'u':
           puts("Update package list from mirror");
@@ -381,6 +381,7 @@ int main(int argc, char **argv)
         search(argv[index]);
         return 0;
     }
+
 
     return 0;
 }
