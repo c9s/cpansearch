@@ -16,6 +16,7 @@
 
 char version[] = "0.1";
 char ignore_case = 0;
+char fullurl     = 0;
 
 char * skipword( char * s2 )
 {
@@ -218,6 +219,12 @@ int search(const char * pattern)
     url = smeta.uri;
     printf( "Source list from: %s\n" , url );
 
+
+    char hosturl[128];
+    char * c = strstr( url , "/modules" );
+    strncpy( hosturl , url , c - url ); 
+
+
     int flag = REG_NOSUB | REG_EXTENDED;
     if( ignore_case )
         flag = flag | REG_ICASE;
@@ -226,12 +233,19 @@ int search(const char * pattern)
 
     regmatch_t matchlist[1];
 
+    char longurl[300];
     while( !feof(in) ) {
         memset( &mdata , 0 , sizeof(moduledata_t) );
         fread( &mdata , sizeof(moduledata_t) , 1 , in );
 
         if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
-            printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , mdata.path );
+            if( fullurl ) {
+                sprintf( longurl , "%s/authors/id/%s" , hosturl , mdata.path );
+                printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , longurl );
+            }
+            else {
+                printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , mdata.path );
+            }
         }
     }
     fclose(in);
@@ -308,10 +322,10 @@ static int thisopt = 0;
 static struct option long_options[] = {
   { "fetch"     , required_argument, 0 , 'f' },
   { "init"      , required_argument, 0 , 'f' },
-  { "search"    , required_argument, 0 , 's' },
   { "update"    , no_argument,      0 , 'u' },
   { "recent"    , no_argument      , 0 , 'r' },
   { "help"      , no_argument      , 0 , 'h' },
+  { "url"       , no_argument      , 0 , 'l' },
 };
 /* getopt setting end */
 
@@ -323,7 +337,7 @@ int main(int argc, char **argv)
 
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:s:u:rh", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:u:rh:l", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
 
@@ -337,6 +351,11 @@ int main(int argc, char **argv)
 
         case 'i':
           ignore_case = 1;
+          ++optbind;
+          break;
+
+        case 'l':
+          fullurl = 1;
           ++optbind;
           break;
 
