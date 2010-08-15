@@ -337,7 +337,7 @@ int main(int argc, char **argv)
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:s:u:rh", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:u:rh:l", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
 
@@ -352,7 +352,6 @@ int main(int argc, char **argv)
         case 'i':
           ignore_case = 1;
           ++optbind;
-          break;
 
         case 'l':
           fullurl = 1;
