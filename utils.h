@@ -25,8 +25,7 @@ void _gunzip( char * file ) {
 
 char * slist_url() {
 
-    char * datafile = indexfile();
-    FILE * in = fopen (datafile, "rb+");
+    FILE * in = fopen ( indexfile(), "rb+");
     assert( in != NULL );
 
     sourcemeta_t smeta;

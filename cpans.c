@@ -25,10 +25,9 @@ char fullurl     = 0;
 void slist_transform( const char * url , const char * sourcefile )
 {
     sourcemeta_t smeta;
-    char * datafile = indexfile();
 
     FILE *in = fopen( sourcefile , "rb" );
-    FILE *out = fopen( datafile , "wb+" );
+    FILE *out = fopen( indexfile() , "wb+" );
 
     char buffer[300];
     int i;

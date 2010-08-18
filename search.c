@@ -34,9 +34,8 @@ int search(const char * pattern) {
     moduledata_t mdata;
     sourcemeta_t smeta;
     char * url;
-    char * datafile = indexfile();
 
-    in = fopen (datafile, "rb+");
+    in = fopen ( indexfile(), "rb+");
     assert( in != NULL );
 
     fread( &smeta , sizeof(sourcemeta_t) , 1 , in );
