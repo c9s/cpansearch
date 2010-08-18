@@ -21,8 +21,7 @@ extern char fullurl;
 
 char * indexfile() {
     /* return ~/.cpansearch.dat */
-    char *datafile;
-    datafile = malloc(256*sizeof(char));
+    char *datafile = malloc(256*sizeof(char));
     sprintf( datafile, "%s/.cpansearch.dat", g_get_home_dir() );
     return datafile;
 }
