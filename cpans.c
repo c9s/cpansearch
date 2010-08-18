@@ -15,26 +15,11 @@
 #include "cpans.h"
 #include "help.h"
 #include "search.h"
+#include "utils.h"
 
 char version[] = "0.1";
 char ignore_case = 0;
 char fullurl     = 0;
-
-char * skipword( char * s2 )
-{
-    while( isgraph(*s2) )
-        s2++;
-    return s2;
-}
-
-char * skipspace( char * s2 ) 
-{
-    while( *s2 == ' ' )
-        s2++;
-    return s2;
-}
-
-
 
 
 void slist_transform( const char * url , const char * sourcefile )
