@@ -13,6 +13,7 @@
 
 #include "membuf.h"
 #include "cpans.h"
+#include "help.h"
 
 char version[] = "0.1";
 char ignore_case = 0;
@@ -251,24 +252,6 @@ int search(const char * pattern)
     fclose(in);
     return 0;
 }
-
-
-
-void help()
-{
-    printf( "cpans usage:\n\n" );
-    printf( "  To init source list:\n\n" );
-    printf( "     cpans -i http://cpan.nctu.edu.tw/ \n" );
-    printf( "     cpans --init http://cpan.nctu.edu.tw/ \n\n" );
-
-    printf( "  To update source list:\n\n" );
-    printf( "     cpans --update  \n" );
-    printf( "     cpans --u  \n\n" );
-
-    printf( "  To search:\n\n" );
-    printf( "     cpans [pattern]  \n\n" );
-}
-
 
 void init_local( char * localpath )
 {
