@@ -28,11 +28,11 @@ char * slist_url() {
     FILE * in = fopen ( indexfile(), "rb+");
     assert( in != NULL );
 
-    sourcemeta_t smeta;
-    fread( &smeta , sizeof(sourcemeta_t) , 1 , in );
-    printf( "Source list from: %s\n" , smeta.uri );
+    sourcemeta_t * smeta = malloc(sizeof(sourcemeta_t));
+    fread( smeta , sizeof(sourcemeta_t) , 1 , in );
+    printf( "Source list from: %s\n" , smeta->uri );
     fclose( in );
-    return strdup(smeta.uri);
+    return smeta->uri;
 
 }
 

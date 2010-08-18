@@ -30,9 +30,9 @@ void slist_transform( const char * url , const char * sourcefile )
     FILE *out = fopen( indexfile() , "wb+" );
 
     char buffer[300];
-    int i;
-    for (i = 0; i < 9; i++)
+    for (int i = 0; i < 9; i++) {
         fgets( buffer , 300 , in );   // skip 9 lines (header)
+    }
 
     memset( &smeta , 0 , sizeof( sourcemeta_t ));
     sprintf( smeta.uri , "%s" , url );
