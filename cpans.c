@@ -88,22 +88,6 @@ void slist_transform( const char * url , const char * sourcefile )
 
 
 
-char * slist_url() {
-
-    FILE * in;
-    char * datafile = indexfile();
-
-    in = fopen (datafile, "rb+");
-    assert( in != NULL );
-
-
-    sourcemeta_t smeta;
-    fread( &smeta , sizeof(sourcemeta_t) , 1 , in );
-    printf( "Source list from: %s\n" , smeta.uri );
-    fclose( in );
-    return strdup(smeta.uri);
-}
-
 
 
 
