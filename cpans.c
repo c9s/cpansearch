@@ -24,9 +24,8 @@ char fullurl     = 0;
 
 void slist_transform( const char * url , const char * sourcefile )
 {
-    char datafile[128];
     sourcemeta_t smeta;
-    cpansearch_datafile( datafile );
+    char * datafile = indexfile();
 
     FILE *in = fopen( sourcefile , "rb" );
     FILE *out = fopen( datafile , "wb+" );
@@ -89,12 +88,11 @@ void slist_transform( const char * url , const char * sourcefile )
 
 
 
-char * slist_url()
-{
-    FILE * in;
-    char datafile[128];
+char * slist_url() {
 
-    cpansearch_datafile( datafile );
+    FILE * in;
+    char * datafile = indexfile();
+
     in = fopen (datafile, "rb+");
     assert( in != NULL );
 
@@ -108,12 +106,6 @@ char * slist_url()
 
 
 
-void _gunzip( char * file )
-{
-    char cmd[32];
-    sprintf( cmd , "gunzip -f %s" , file );
-    system( cmd );
-}
 
 int init( char * mirror_site )
 {

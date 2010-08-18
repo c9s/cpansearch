@@ -15,4 +15,12 @@ extern char * skipspace( char * s2 ) {
 
 }
 
+void _gunzip( char * file ) {
+
+    char cmd[32];
+    sprintf( cmd , "gunzip -f %s" , file );
+    system( cmd );
+
+}
+
 #endif

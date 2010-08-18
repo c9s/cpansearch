@@ -18,23 +18,24 @@ extern char version[];
 extern char ignore_case;
 extern char fullurl;
 
-void cpansearch_datafile(char * path )
-{
-    sprintf( path , "%s/.cpansearch.dat" , g_get_home_dir() );
+
+char * indexfile() {
+    /* return ~/.cpansearch.dat */
+    char *datafile;
+    datafile = malloc(256*sizeof(char));
+    sprintf( datafile, "%s/.cpansearch.dat", g_get_home_dir() );
+    return datafile;
 }
 
 
-int search(const char * pattern)
-{
+int search(const char * pattern) {
 
-    char datafile[128];
     regex_t reg;
     FILE * in;
     moduledata_t mdata;
     sourcemeta_t smeta;
     char * url;
-
-    cpansearch_datafile( datafile );
+    char * datafile = indexfile();
 
     in = fopen (datafile, "rb+");
     assert( in != NULL );

@@ -2,6 +2,6 @@
 #define __SEARCH_H__
 
 extern int search(const char * pattern);
-extern void cpansearch_datafile(char * path);
+extern char * indexfile();
 
 #endif
