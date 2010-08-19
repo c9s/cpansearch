@@ -17,7 +17,7 @@
 extern char version[];
 extern char ignore_case;
 extern char fullurl;
-
+extern char nameonly;
 
 char * indexfile() {
     /* return ~/.cpansearch.dat */
@@ -62,7 +62,10 @@ int search(const char * pattern) {
         fread( &mdata , sizeof(moduledata_t) , 1 , in );
 
         if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
-            if( fullurl ) {
+            if( nameonly ) {
+                printf( "%s\n" , mdata.name );
+            }
+            else if( fullurl ) {
                 sprintf( longurl , "%s/authors/id/%s" , hosturl , mdata.path );
                 printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , longurl );
             }

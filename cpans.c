@@ -20,6 +20,7 @@
 char version[] = "0.1";
 char ignore_case = 0;
 char fullurl     = 0;
+char nameonly    = 0;
 
 int init( char * mirror_site ) {
 
@@ -142,10 +143,11 @@ static int thisopt = 0;
 static struct option long_options[] = {
   { "fetch"     , required_argument, 0 , 'f' },
   { "init"      , required_argument, 0 , 'f' },
-  { "update"    , no_argument,      0 , 'u' },
+  { "update"    , no_argument      , 0 , 'u' },
   { "recent"    , no_argument      , 0 , 'r' },
   { "help"      , no_argument      , 0 , 'h' },
   { "url"       , no_argument      , 0 , 'l' },
+  { "name"      , no_argument      , 0 , 'n' },
 };
 /* getopt setting end */
 
@@ -157,7 +159,7 @@ int main(int argc, char **argv)
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:u:rh:l", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:u:rh:nl", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
 
@@ -172,10 +174,17 @@ int main(int argc, char **argv)
         case 'i':
           ignore_case = 1;
           ++optbind;
+          break;
 
         case 'l':
           fullurl = 1;
           ++optbind;
+          break;
+
+        case 'n':
+          nameonly = 1;
+          ++optbind;
+          break;
 
         case 'u':
           puts("Update package list from mirror");
