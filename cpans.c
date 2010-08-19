@@ -33,7 +33,7 @@ int init( char * mirror_site ) {
 
     sprintf (url, "%s%s", mirror_site, "modules/02packages.details.txt.gz");
 
-    printf( "Downloading source from %s\n" , url );
+    fprintf( stderr, "Downloading source from %s\n" , url );
     mbuf = membuf_curl( url );
 
     char * tempfile = "packages.gz";
@@ -41,7 +41,7 @@ int init( char * mirror_site ) {
     membuf_writefile( mbuf , tempfile );
     membuf_free( mbuf );
 
-    printf( "\nSource list saved.\n" );
+    fprintf( stderr, "\nSource list saved.\n" );
 
     // use gunzip command to unzip the file..
     _gunzip( tempfile );
@@ -52,10 +52,10 @@ int init( char * mirror_site ) {
     strncpy( outfile , tempfile , len );
     *(outfile+len) = '\0';
 
-    printf( "Transforming source list format.\n" );
+    fprintf( stderr, "Transforming source list format.\n" );
     slist_transform( url , outfile );
 
-    printf( "Done\n" );
+    fprintf( stderr, "Done\n" );
     return 0;
 }
 
