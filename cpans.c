@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:u:rh:nl", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:urh:nl", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
 
