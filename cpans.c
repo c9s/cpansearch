@@ -1,9 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <unistd.h>
-#include <glib.h>
 #include <getopt.h>
 
 #include "cpans.h"
@@ -19,51 +14,6 @@ char ignore_case = 0;
 char fullurl     = 0;
 char nameonly    = 0;
 
-
-void init_local( char * localpath )
-{
-
-
-
-}
-
-
-void init_from_minicpanrc()
-{
-    char minicpanrc[64];
-    sprintf( minicpanrc , "%s/.minicpanrc" , g_get_home_dir() );
-
-    if (!g_file_test (minicpanrc, G_FILE_TEST_EXISTS))
-        return;
-
-
-
-    FILE *rc = fopen( minicpanrc , "r" );
-    char buffer[50] = {0};
-    char localpath[64] = {0};
-
-    strcat( localpath , "file://" );
-
-    while(!feof(rc)){
-        fgets( buffer , 50 , rc );
-        if( strstr(buffer,"local:") == buffer ) {
-            char * c = strchr(buffer,'/');
-            strcat( localpath , c );
-
-            // chomp
-            *(localpath + strlen(localpath) - 1) = '\0';
-            break;
-        }
-    }
-    fclose(rc);
-    assert( localpath != NULL );
-
-    if( * (localpath + strlen(localpath) - 1 ) != '/' )
-        strcat(localpath , "/");
-
-    printf( "Found minicpanrc: %s\n" , localpath );
-    init( localpath );
-}
 
 /* getopt setting start */
 static int option_index = 0;
