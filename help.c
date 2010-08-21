@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-void help()
-{
+void help () {
+
     printf( "cpans usage:\n\n"
             "  To init source list:\n\n"
             "     cpans -i http://cpan.nctu.edu.tw/ \n"
@@ -13,4 +13,5 @@ void help()
 
             "  To search:\n\n"
             "     cpans [pattern]  \n\n" );
+
 }

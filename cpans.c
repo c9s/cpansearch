@@ -3,13 +3,8 @@
 #include <string.h>
 #include <assert.h>
 #include <unistd.h>
-#include <getopt.h>
-
-#include <stdarg.h>
-#include <sys/types.h>
-#include <regex.h>
 #include <glib.h>
-#include <ctype.h>
+#include <getopt.h>
 
 #include "membuf.h"
 #include "cpans.h"

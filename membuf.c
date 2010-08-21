@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,8 +5,8 @@
 #include <curl/curl.h>
 #include "membuf.h"
 
-size_t _write_data(void *buffer, size_t size, size_t nmemb, void *userp)
-{
+size_t _write_data (void *buffer, size_t size, size_t nmemb, void *userp) {
+
     // printf(". %d %d\n", size , nmemb);
     printf( "." );
 
@@ -25,20 +24,21 @@ size_t _write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 }
 
 
-membuf * membuf_new()
-{
+membuf * membuf_new () {
+
     membuf * mbuf = (membuf*) malloc( sizeof(membuf) );
     mbuf->index  = 0;
     mbuf->length = 1024 * 24;
     mbuf->buffer = malloc( sizeof(char) * 1024 * 24 );
     memset( mbuf->buffer , 0 , sizeof( sizeof(char) * 1024 * 24 ) );
     return mbuf;
+
 }
 
 
 /* return source list file path */
-membuf * membuf_curl( const char * url )
-{
+membuf * membuf_curl ( const char * url ) {
+
     membuf * mbuf = membuf_new();
 
     CURL *curl;
@@ -61,14 +61,15 @@ membuf * membuf_curl( const char * url )
 
 
 
-void membuf_free( membuf * mbuf )
-{
+void membuf_free ( membuf * mbuf ) {
+
     free( mbuf->buffer );
     free( mbuf );
+
 }
 
-void membuf_writefile( membuf * mbuf , const char * file )
-{
+void membuf_writefile( membuf * mbuf , const char * file ) {
+
     FILE *fp;
     int idx = 0;
 
