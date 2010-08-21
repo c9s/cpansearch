@@ -6,55 +6,17 @@
 #include <glib.h>
 #include <getopt.h>
 
-#include "membuf.h"
 #include "cpans.h"
+#include "membuf.h"
 #include "help.h"
 #include "search.h"
 #include "utils.h"
+#include "init.h"
 
 char version[] = "0.1";
 char ignore_case = 0;
 char fullurl     = 0;
 char nameonly    = 0;
-
-int init( char * mirror_site ) {
-
-    char url[256];
-    membuf * mbuf;
-
-    // check mirror_site url , should be end with "/"
-    if( * (mirror_site + strlen(mirror_site) - 1 ) != '/' )
-        strcat(mirror_site , "/");
-
-    sprintf (url, "%s%s", mirror_site, "modules/02packages.details.txt.gz");
-
-    fprintf( stderr, "Downloading source from %s\n" , url );
-    mbuf = membuf_curl( url );
-
-    char * tempfile = "packages.gz";
-    assert( mbuf->buffer != NULL );
-    membuf_writefile( mbuf , tempfile );
-    membuf_free( mbuf );
-
-    fprintf( stderr, "\nSource list saved.\n" );
-
-    // use gunzip command to unzip the file..
-    _gunzip( tempfile );
-    unlink( tempfile );
-
-    int len = strrchr( tempfile , '.' ) - tempfile;
-    char outfile[32];
-    strncpy( outfile , tempfile , len );
-    *(outfile+len) = '\0';
-
-    fprintf( stderr, "Transforming source list format.\n" );
-    slist_transform( url , outfile );
-
-    fprintf( stderr, "Done\n" );
-    return 0;
-}
-
-
 
 int update() {
 

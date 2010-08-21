@@ -1,6 +1,8 @@
 #ifndef __CPANS_H__
 #define __CPANS_H__
 
+#include <sys/types.h>
+
 typedef struct {
     char uri[80];
     float version;
