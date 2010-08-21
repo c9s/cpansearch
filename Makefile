@@ -3,7 +3,7 @@
 PROG=cpans
 CFLAGS= -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
 LDFLAGS= $$(pkg-config --libs  glib-2.0 libcurl)
-SRCS= cpans.c membuf.c help.c utils.c search.c init.c
+SRCS= cpans.c membuf.c help.c utils.c search.c init.c update.c
 OBJS=$(SRCS:.c=.o)
 
 all: $(PROG)
