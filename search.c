@@ -2,30 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <unistd.h>
-#include <getopt.h>
-
-#include <stdarg.h>
-#include <sys/types.h>
 #include <regex.h>
-#include <glib.h>
-#include <ctype.h>
 
-#include "membuf.h"
 #include "cpans.h"
+#include "utils.h"
 
 extern char version[];
 extern char ignore_case;
 extern char fullurl;
 extern char nameonly;
-
-char * indexfile() {
-    /* return ~/.cpansearch.dat */
-    char *datafile = malloc(256*sizeof(char));
-    sprintf( datafile, "%s/.cpansearch.dat", g_get_home_dir() );
-    return datafile;
-}
-
 
 int search(const char * pattern) {
 
