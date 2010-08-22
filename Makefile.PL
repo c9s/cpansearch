@@ -1,20 +1,15 @@
 #!/usr/bin/env perl
 use inc::Module::Install;
+
+
 # vim:noet:sw=4:
 if(-e 'Makefile') {
     warn "Original Makefile exists , Move to Makefile.old";
     rename 'Makefile' , 'Makefile.old';
 }
 
-name     'App-cpansearch';
-all_from 'lib/App/cpansearch.pm';
-author   q{Cornelius <cornelius.howl@gmail.com>};
-license  'perl';
-WriteAll;
-
-
-
 my $ret;
+print STDERR "Checking library...\n";
 $ret = qx(pkg-config --cflags glib-2.0 libcurl);
 unless( $ret ) {
 	die $ret;
@@ -24,6 +19,15 @@ $ret = qx(pkg-config --libs glib-2.0 libcurl);
 unless( $ret ) {
 	die $ret;
 }
+
+
+
+name     'App-cpansearch';
+all_from 'lib/App/cpansearch.pm';
+author   q{Cornelius <cornelius.howl@gmail.com>};
+license  'perl';
+WriteAll;
+
 
 exit if $ENV{DIST};
 open FH , ">" , 'Makefile';
