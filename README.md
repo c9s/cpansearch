@@ -71,6 +71,18 @@ Supports posix extended regular expression:
 
     $ cpans "^Any"
 
+Show names only:
+
+    $ cpans -n App::
+
+Pipe to cpanminus to install:
+
+    $ cpans -n App:: | cpanm
+
+Show full url:
+
+    $ cpans -nl App::
+
     $ cpans "Server$"
 
     $ cpans [A-C][A-C]
