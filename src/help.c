@@ -4,8 +4,8 @@ void help () {
 
     printf( "cpans usage:\n\n"
             "  To init source list:\n\n"
-            "     cpans -i http://cpan.nctu.edu.tw/ \n"
-            "     cpans --init http://cpan.nctu.edu.tw/ \n\n"
+            "     cpans -f http://cpan.nctu.edu.tw/ \n"
+            "     cpans --fetch http://cpan.nctu.edu.tw/ \n\n"
 
             "  To update source list:\n\n"
             "     cpans --update  \n"
