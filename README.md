@@ -95,10 +95,9 @@ Show full url:
 ## AUTHORS
 
 c9s <cornelius.howl@gmail.com>
+Shellingford
 
 ## Contributors
-
-Shellingford
 
 Mattn
 
