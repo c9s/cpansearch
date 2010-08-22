@@ -1,9 +1,17 @@
 #!/usr/bin/env perl
+use inc::Module::Install;
 # vim:noet:sw=4:
 if(-e 'Makefile') {
     warn "Original Makefile exists , Move to Makefile.old";
     rename 'Makefile' , 'Makefile.old';
 }
+
+name     'App-cpansearch';
+all_from 'lib/App/cpansearch.pm';
+author   q{Cornelius <cornelius.howl@gmail.com>};
+license  'perl';
+WriteAll;
+
 
 my $ret;
 $ret = qx(pkg-config --cflags glib-2.0 libcurl);
@@ -16,6 +24,7 @@ unless( $ret ) {
 	die $ret;
 }
 
+exit if $ENV{DIST};
 open FH , ">" , 'Makefile';
 print FH <<'END';
 
@@ -39,6 +48,7 @@ $(PROG): $(OBJS)
 		@echo "----------------"
 
 install: $(PROG)
+		./cpans --fetch http://cpan.nctu.edu.tw/
 		mkdir -p /usr/bin/
 		cp $(PROG) /usr/bin/
 
