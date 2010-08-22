@@ -90,6 +90,15 @@ Show full url:
     # to ignore case
     $ cpans -i server
 
+## AUTHORS
+
+c9s <cornelius.howl@gmail.com>
+
+## Contributors
+
+Shellingford
+
+Mattn
 
 ## PLATFORM
 
