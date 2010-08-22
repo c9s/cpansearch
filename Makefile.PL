@@ -13,6 +13,7 @@ license  'perl';
 WriteAll;
 
 
+
 my $ret;
 $ret = qx(pkg-config --cflags glib-2.0 libcurl);
 unless( $ret ) {
@@ -28,13 +29,22 @@ exit if $ENV{DIST};
 open FH , ">" , 'Makefile';
 print FH <<'END';
 
+# THIS MAKEFILE IS AUTO-GENERATED , PLEASE DONT EDIT THIS DIRECTLY.
+# PLEASE EDIT Makefile.PL.  THANKS
+
 PROG=cpans
 
-CFLAGS= -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
+CFLAGS= -I. -Iinclude/ -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
 
 LDFLAGS= $$(pkg-config --libs  glib-2.0 libcurl)
 
-SRCS= cpans.c membuf.c help.c utils.c search.c init.c update.c
+SRCS= src/cpans.c \
+	src/membuf.c \
+	src/help.c \
+	src/utils.c \
+	src/search.c \
+	src/init.c \
+	src/update.c
 
 OBJS=$(SRCS:.c=.o)
 
