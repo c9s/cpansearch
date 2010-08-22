@@ -9,11 +9,16 @@
 #include "init.h"
 #include "update.h"
 
-char version[] = "0.1";
+char version[] = "0.2";
 char ignore_case = 0;
 char fullurl     = 0;
 char nameonly    = 0;
 
+
+void print_version()
+{
+    printf("cpans -- version %s\n", version );
+}
 
 /* getopt setting start */
 static int option_index = 0;
@@ -27,9 +32,9 @@ static struct option long_options[] = {
   { "help"      , no_argument      , 0 , 'h' },
   { "url"       , no_argument      , 0 , 'l' },
   { "name"      , no_argument      , 0 , 'n' },
+  { "version"      , no_argument   , 0 , 'v' },
 };
 /* getopt setting end */
-
 
 int main(int argc, char **argv)
 {
@@ -38,9 +43,12 @@ int main(int argc, char **argv)
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:urh:nl", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "vif:urhnl", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
+        case 'v':
+            print_version();
+            return 0;
 
         case 'f':
           if (optarg != NULL) {
