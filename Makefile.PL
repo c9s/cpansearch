@@ -66,6 +66,9 @@ install: $(PROG)
 		mkdir -p /usr/bin/
 		cp $(PROG) /usr/bin/
 
+test:
+		true
+
 clean:  
 		rm -rf $(PROG) $(OBJS)
 
