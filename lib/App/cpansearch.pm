@@ -4,6 +4,10 @@ use strict;
 
 our $VERSION = 0.01;
 
+=head1 NAME
+
+App::cpansearch - A lightweight fast cpan module search utility written in C.
+
 =head1 SYNOPSIS
 
 To initialize source list datafile.
