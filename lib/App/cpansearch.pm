@@ -65,14 +65,14 @@ Cornelius, C<< <cornelius.howl at gmail.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-app-gh at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-gh>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-cpansearch>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc App::gh
+    perldoc App::cpansearch
 
 You can also look for information at:
 
@@ -80,19 +80,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-gh>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-cpansearch>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/App-gh>
+L<http://annocpan.org/dist/App-cpansearch>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/App-gh>
+L<http://cpanratings.perl.org/d/App-cpansearch>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/App-gh/>
+L<http://search.cpan.org/dist/App-cpansearch/>
 
 =back
 
