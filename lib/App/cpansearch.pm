@@ -2,7 +2,7 @@ package App::cpansearch;
 use warnings;
 use strict;
 
-our $VERSION = 0.021;
+our $VERSION = 0.022;
 
 =head1 NAME
 
