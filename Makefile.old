@@ -29,8 +29,8 @@ $(PROG): $(OBJS)
 
 install: $(PROG)
 		./cpans --fetch http://cpan.nctu.edu.tw/
-		mkdir -p /usr/bin/
-		cp $(PROG) /usr/bin/
+		mkdir -p $installbin
+		cp $(PROG) $installbin
 
 test:
 		true

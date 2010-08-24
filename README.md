@@ -110,6 +110,8 @@ Mattn
 
     search installed packages.
 
+    search out-dated packages.
+
     search and install.
 
         $ cpans -i AnyEvent::HTTP    # call cpanminus to install the only matched one.
