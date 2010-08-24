@@ -32,7 +32,7 @@ static struct option long_options[] = {
   { "help"      , no_argument      , 0 , 'h' },
   { "url"       , no_argument      , 0 , 'l' },
   { "name"      , no_argument      , 0 , 'n' },
-  { "version"      , no_argument   , 0 , 'v' },
+  { "version"   , no_argument      , 0 , 'v' },
 };
 /* getopt setting end */
 

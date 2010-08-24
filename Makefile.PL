@@ -60,11 +60,11 @@ all: \$(PROG)
 		\$(CC) \$(CFLAGS) \$(LDFLAGS) \$(OBJS) -o \$(PROG)
 		\@echo "----------------"
 		\@echo "When you upgrade cpans, please update the source data again with -i option:"
-		\@echo "   cpans -i http://search.cpan.org/"
+		\@echo "   cpans -f http://cpan.perl.org/"
 		\@echo "----------------"
 
 install: \$(PROG)
-		./cpans --fetch http://cpan.nctu.edu.tw/
+		./cpans --fetch http://cpan.perl.org/
 		mkdir -p    $binpath
 		cp \$(PROG) $binpath
 
