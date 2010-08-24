@@ -22,7 +22,6 @@ modules.
 ### Build - For debian-based system:
 
     $ sudo apt-get install libcurl4-openssl-dev libglib2.0-dev
-    $ perl Makefile.PL
     $ make install
 
 ### Build - For mac users:
