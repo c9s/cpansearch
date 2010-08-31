@@ -1,4 +1,6 @@
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include <regex.h>
@@ -8,65 +10,201 @@
 
 extern char version[];
 extern char ignore_case;
-extern char fullurl;
-extern char nameonly;
 extern char verbose;
 
-int search(const char * pattern) {
-
-    regex_t reg;
-    FILE * in;
-    moduledata_t mdata;
-    sourcemeta_t smeta;
-    char * url;
-
-    in = fopen ( indexfile(), "rb+");
-    assert( in != NULL );
-
-    fread( &smeta , sizeof(sourcemeta_t) , 1 , in );
-    url = smeta.uri;
-    printf( "Source list from: %s\n" , url );
+// TODO:
+void search_ncurses()
+{
 
 
-    char hosturl[128];
-    char * c = strstr( url , "/modules" );
-    strncpy( hosturl , url , c - url ); 
+}
 
 
-    int flag = REG_NOSUB | REG_EXTENDED;
-    if( ignore_case )
-        flag = flag | REG_ICASE;
+int module_filter( regex_t * reg , moduledata_t * mitem )
+{
+    regmatch_t reglist[1];
+    if( regexec( reg , mitem->name  , 1 , reglist , 0 ) != 0 )
+        return 0;
 
-    assert( regcomp( &reg , pattern , flag ) == 0 );
+    // XXX: add an opt for ignoring 0 version modules
+    if( strcmp(mitem->version,"0") == 0 )
+        return 0;
 
-    regmatch_t matchlist[1];
+    return 1;
+}
+
+/* level 1 search result rendering
+   very simple , just render module name list
+ * */
+void
+render_search(
+    moduledata_t ** mlist,
+    int mlistsize,
+    regex_t * reg
+    )
+{
+    int i;
+    regmatch_t  reglist[1];
+    moduledata_t * mitem;
+    for(i=0;i<mlistsize;i++) {
+        if( module_filter( reg , mlist[i] ) == 0 )
+            continue;
+        mitem = mlist[i];
+        printf( "%s\n" , mitem->name );
+    }
+}
+
+
+void
+render_search2(
+    moduledata_t ** mlist,
+    int mlistsize,
+    regex_t * reg
+    )
+{
+    int i;
+    regmatch_t  reglist[1];
+    moduledata_t * mitem;
+    for(i=0;i<mlistsize;i++) {
+        if( module_filter( reg , mlist[i] ) == 0 )
+            continue;
+        mitem = mlist[i];
+        printf( "%-40s - %-10s (%s)\n" , mitem->name , mitem->version , mitem->path );
+    }
+}
+
+/*
+   show long module url list
+ * */
+void
+render_search3(
+    moduledata_t ** mlist,
+    int mlistsize,
+    regex_t * reg,
+    char * hosturl
+    )
+{
+    int i;
+    regmatch_t  reglist[1];
+    moduledata_t * mitem;
 
     char longurl[300];
-    while( !feof(in) ) {
-        memset( &mdata , 0 , sizeof(moduledata_t) );
-        fread( &mdata , sizeof(moduledata_t) , 1 , in );
+    for(i=0;i<mlistsize;i++) {
+        mitem = mlist[i];
 
-        if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
-            if( verbose ) {
-                printf( "%s" , mdata.name );
-                if( fullurl ) {
-                    sprintf( longurl , "%s/authors/id/%s" , hosturl , mdata.path );
-                    printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , longurl );
-                }
-                else {
-                    printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , mdata.path );
-                }
-            } 
-            else {
-                if( strcmp(mdata.version,"0") != 0 ) {
-                    // printf( "%s %s\n" , mdata.name , mdata.version );
-                    printf( "%s\n" , mdata.name );
-                }
-            }
+        // XXX: refactor filtering method
+        if( regexec( reg , mitem->name  , 1 , reglist , 0 ) != 0 )
+            continue;
 
-        }
+        // XXX: add an opt for ignoring 0 version modules
+        if( strcmp(mitem->version,"0") == 0 )
+            continue;
+
+        sprintf( longurl , "%s/authors/id/%s" , hosturl , mitem->path );
+        printf( "%-40s - %-10s (%s)\n" , mitem->name , mitem->version , longurl );
     }
+}
+
+
+int smeta_read( FILE * in , sourcemeta_t * smeta )
+{
+    fread( smeta , sizeof(sourcemeta_t) , 1 , in );
+    // XXX: check version and compatible here...
+    // printf("meta version: %f\n",smeta->version);
+    // printf("module num:   %d\n",smeta->modulenum);
+    // printf("source list url: %s\n" , smeta->uri );
+    return 0;
+}
+
+
+moduledata_t ** modulelist_new( int size )
+{
+    int i;
+    moduledata_t ** mlist;
+    mlist = (moduledata_t **) malloc (sizeof (moduledata_t*) * size);
+    for (i = 0; i < size; i++)
+        mlist[i] = (moduledata_t *) malloc (sizeof (moduledata_t));
+    return mlist;
+}
+
+void modulelist_free( moduledata_t ** mlist , int size )
+{
+    int i;
+    for (i = 0; i < size; i++)
+        free (mlist[i]);
+    free(mlist);
+}
+
+void modulelist_read( moduledata_t ** mlist , int num , FILE * in ) 
+{
+    int i = 0;
+    while( !feof(in) && i < num )
+    {
+        // printf( "%d\r" , i );
+        memset( mlist[i] , 0 , sizeof(moduledata_t) );
+        fread( mlist[i] , sizeof(moduledata_t) , 1 , in );
+        i++;
+    }
+}
+
+
+
+
+
+int search(const char * pattern)
+{
+
+    sourcemeta_t smeta;
+    FILE *      in;
+
+    regex_t     reg;
+    int         regflag;
+    regmatch_t  reglist[1];
+
+    moduledata_t * mitem;
+    moduledata_t ** mlist;
+    int mlistsize;
+    int         i;
+
+    // compile regular expression
+    regflag = REG_NOSUB | REG_EXTENDED;
+    if( ignore_case )
+        regflag = regflag | REG_ICASE;
+    assert( regcomp( &reg , pattern , regflag ) == 0 );
+
+    in = fopen ( indexfile() , "rb+");
+    assert( in != NULL );
+
+    smeta_read( in , &smeta );
+
+
+    mlistsize = smeta.modulenum;
+    mlist = modulelist_new( mlistsize );
+    modulelist_read( mlist, mlistsize , in );
     fclose(in);
+
+    switch (verbose) 
+    {
+        case 1:
+            render_search2( mlist , mlistsize , &reg );
+            break;
+
+        case 2:
+            {
+                char hosturl[128] = {0} ;
+                char * url = smeta.uri;
+                char * c;
+                c = strstr( url , "/modules" );
+                strncpy( hosturl , url , c - url ); 
+                render_search3( mlist , mlistsize , &reg , hosturl );
+            }
+            break;
+
+        case 0:
+        default:
+            render_search( mlist , mlistsize , &reg );
+    }
+    modulelist_free( mlist , mlistsize );
     return 0;
 }
 

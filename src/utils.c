@@ -79,6 +79,7 @@ void slist_transform( const char * url , const char * sourcefile ) {
         if( strlen(buffer) == 0 )
             break;
 
+
         s1 = buffer;
         s2 = buffer;
         s2 = skipword( s2 );
@@ -103,8 +104,14 @@ void slist_transform( const char * url , const char * sourcefile ) {
 
         // printf( "%s - %s - %s\n" , mdata.name , mdata.version , mdata.path );
         fwrite( &mdata , sizeof(moduledata_t) , 1 , out  );
+
         cnt++;
     }
+
+    // update module num
+    smeta.modulenum = cnt;
+    fseek( out , 0 , SEEK_SET );
+    fwrite( &smeta , sizeof(sourcemeta_t) , 1 , out );
 
     printf( "%d packages recorded.\n" , cnt );
 

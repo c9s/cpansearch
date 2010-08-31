@@ -11,7 +11,6 @@
 
 char version[] = "0.2";
 char ignore_case = 0;
-char fullurl     = 0;
 char verbose     = 0;
 
 void print_version()
@@ -29,7 +28,6 @@ static struct option long_options[] = {
   { "update"    , no_argument      , 0 , 'u' },
   { "recent"    , no_argument      , 0 , 'r' },
   { "help"      , no_argument      , 0 , 'h' },
-  { "url"       , no_argument      , 0 , 'l' },
   { "verbose"   , no_argument      , 0 , 'v' },
 };
 /* getopt setting end */
@@ -44,9 +42,6 @@ int main(int argc, char **argv)
     while( (thisopt = getopt_long(argc, argv, "vif:urhnl", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
-        case 'v':
-            verbose = 1;
-            return 0;
 
         case 'f':
           if (optarg != NULL) {
@@ -61,10 +56,10 @@ int main(int argc, char **argv)
           ++optbind;
           break;
 
-        case 'l':
-          fullurl = 1;
-          ++optbind;
-          break;
+        case 'v':
+            ++verbose;
+            ++optbind;
+            break;
 
         case 'u':
           puts("Update package list from mirror");
