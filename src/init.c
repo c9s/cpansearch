@@ -49,18 +49,18 @@ int init( char * mirror_site ) {
 void init_local ( char * localpath ) {
 
 
-
 }
 
-void init_from_minicpanrc () {
-    char minicpanrc[64];
-    sprintf( minicpanrc , "%s/.minicpanrc" , g_get_home_dir() );
+char *  find_minicpanrc()
+{
+    char *rc = (char*) malloc(  sizeof(char) * 100 );
+    sprintf( rc , "%s/.minicpanrc" , g_get_home_dir() );
+    if (!g_file_test (rc, G_FILE_TEST_EXISTS))
+        return NULL;
+    return rc;
+}
 
-    if (!g_file_test (minicpanrc, G_FILE_TEST_EXISTS))
-        return;
-
-
-
+void init_from_minicpanrc ( char * minicpanrc ) {
     FILE *rc = fopen( minicpanrc , "r" );
     char buffer[50] = {0};
     char localpath[64] = {0};

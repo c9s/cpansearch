@@ -9,6 +9,8 @@
 #include "init.h"
 #include "update.h"
 
+#define DEFAULT_MIRROR "http://cpan.perl.org/"
+
 char version[] = "0.2";
 char ignore_case = 0;
 char verbose     = 0;
@@ -40,26 +42,38 @@ int main(int argc, char **argv)
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:urhnlv", long_options, &option_index)) != -1 ) {
+    while ((thisopt =
+            getopt_long (argc, argv, "if?urhnlv", long_options,
+                        &option_index)) != -1)
+    {
 
-      switch (thisopt) {
+        switch (thisopt)
+        {
         case 'n':
-          ++ncurses;
-          ++optbind;
-          break;
+            ++ncurses;
+            ++optbind;
+            break;
 
         case 'f':
-          if (optarg != NULL) {
-            init( (char*)optarg);
-          } else {
-            init_from_minicpanrc();
-          }
-          return 0;
+            if (optarg != NULL) {
+                init ((char *) optarg);
+            }
+            else {
+                char *rcpath = find_minicpanrc ();
+                if (rcpath != NULL) {
+                    init_from_minicpanrc (rcpath);
+                    free (rcpath);
+                }
+                else {
+                    init( DEFAULT_MIRROR );
+                }
+            }
+            return 0;
 
         case 'i':
-          ignore_case = 1;
-          ++optbind;
-          break;
+            ignore_case = 1;
+            ++optbind;
+            break;
 
         case 'v':
             ++verbose;
@@ -67,19 +81,19 @@ int main(int argc, char **argv)
             break;
 
         case 'u':
-          puts("Update package list from mirror");
-          update();
-          return 0;
+            puts ("Update package list from mirror");
+            update ();
+            return 0;
 
         case 'r':
-          puts("Searching packages from recent index");
-          // update package list
-          return 0;
+            puts ("Searching packages from recent index");
+            // update package list
+            return 0;
 
         case 'h':
-          help();
-          return 0;
-      }
+            help ();
+            return 0;
+        }
 
     }
 
