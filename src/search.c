@@ -44,7 +44,6 @@ render_search(
     )
 {
     int i;
-    regmatch_t  reglist[1];
     moduledata_t * mitem;
     for(i=0;i<mlistsize;i++) {
         if( module_filter( reg , mlist[i] ) == 0 )
@@ -63,7 +62,6 @@ render_search2(
     )
 {
     int i;
-    regmatch_t  reglist[1];
     moduledata_t * mitem;
     for(i=0;i<mlistsize;i++) {
         if( module_filter( reg , mlist[i] ) == 0 )
@@ -85,21 +83,13 @@ render_search3(
     )
 {
     int i;
-    regmatch_t  reglist[1];
     moduledata_t * mitem;
 
     char longurl[300];
     for(i=0;i<mlistsize;i++) {
+        if( module_filter( reg , mlist[i] ) == 0 )
+            continue;
         mitem = mlist[i];
-
-        // XXX: refactor filtering method
-        if( regexec( reg , mitem->name  , 1 , reglist , 0 ) != 0 )
-            continue;
-
-        // XXX: add an opt for ignoring 0 version modules
-        if( strcmp(mitem->version,"0") == 0 )
-            continue;
-
         sprintf( longurl , "%s/authors/id/%s" , hosturl , mitem->path );
         printf( "%-40s - %-10s (%s)\n" , mitem->name , mitem->version , longurl );
     }
@@ -159,12 +149,9 @@ int search(const char * pattern)
 
     regex_t     reg;
     int         regflag;
-    regmatch_t  reglist[1];
 
-    moduledata_t * mitem;
     moduledata_t ** mlist;
     int mlistsize;
-    int         i;
 
     // compile regular expression
     regflag = REG_NOSUB | REG_EXTENDED;
