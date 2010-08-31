@@ -12,6 +12,7 @@
 char version[] = "0.2";
 char ignore_case = 0;
 char verbose     = 0;
+char ncurses     = 0;
 
 void print_version()
 {
@@ -29,6 +30,7 @@ static struct option long_options[] = {
   { "recent"    , no_argument      , 0 , 'r' },
   { "help"      , no_argument      , 0 , 'h' },
   { "verbose"   , no_argument      , 0 , 'v' },
+  { "nc"        , no_argument      , 0 , 'n' },
 };
 /* getopt setting end */
 

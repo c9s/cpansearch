@@ -11,14 +11,25 @@
 extern char version[];
 extern char ignore_case;
 extern char verbose;
+extern char ncurses;
 
-// TODO:
-void search_ncurses()
+void
+render_search_ncurses (
+    moduledata_t ** mlist,
+    int mlistsize,
+    regex_t * reg)
 {
+
+
 
 
 }
 
+moduledata_t ** modulelist_filter( regex_t * reg , moduledata_t * mlist )
+{
+
+
+}
 
 int module_filter( regex_t * reg , moduledata_t * mitem )
 {
@@ -32,6 +43,7 @@ int module_filter( regex_t * reg , moduledata_t * mitem )
 
     return 1;
 }
+
 
 /* level 1 search result rendering
    very simple , just render module name list
