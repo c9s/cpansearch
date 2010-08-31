@@ -25,8 +25,6 @@ render_search_ncurses (
     moduledata_t ** mlist_new = modulelist_filter( mlist , mlistsize , &newsize , reg );
     cpans_nc_init( mlist_new , newsize );
     cpans_nc_loop();
-    cpans_nc_end();
-    modulelist_free( mlist_new , newsize );
 }
 
 

@@ -4,6 +4,10 @@
 #include <ncurses.h>
 #include <curses.h>
 #include <menu.h>
+#include <unistd.h>
+
+#include <glib.h>
+
 #include "nc.h"
 #include "cpans.h"
 
@@ -17,6 +21,20 @@ ITEM **cpans_menu_items;
 MENU *cpans_menu;
 ITEM *cur_item;
 
+char * find_cpan_prog()
+{
+    gchar * path;
+    path = g_find_program_in_path("cpanm");
+    if( path != NULL )
+        return path;
+
+    path = g_find_program_in_path("cpanp");
+    if( path != NULL )
+        return path;
+
+    path = g_find_program_in_path("cpan");
+    return path;
+}
 
 void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
 {
@@ -28,11 +46,14 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     noecho ();
     keypad (stdscr, TRUE);
 
+
     /* Initialize items */
     cpans_menu_items = (ITEM **) calloc ( mlistsize + 1, sizeof (ITEM *));
     for (i = 0; i < mlistsize; ++i)
-        cpans_menu_items[i] = new_item( strdup(mlist[i]->name) , strdup(mlist[i]->version) );
-
+        cpans_menu_items[i] = new_item( 
+                    strdup(mlist[i]->name) , 
+                    strdup( mlist[i]->version )
+                );
 
     cpans_menu_items[ mlistsize ] = (ITEM *) NULL;
 
@@ -46,15 +67,15 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     /* Make the menu multi valued */
     menu_opts_off( cpans_menu, O_ONEVALUE);
 
-    mvprintw (LINES - 3, 0, "<SPACE>: select item.  <Q>: quit. <J/K>: move item.");
-    mvprintw (LINES - 2, 0, "<ENTER> to install selected modules.");
+    mvprintw (LINES - 3, 0, "<SPACE>: select item.  <q>: quit. <j/k>: move item.");
+    mvprintw (LINES - 2, 0, "<ENTER> to install selected modules. <g>: to install selected items.");
     post_menu (cpans_menu);
     refresh ();
 }
 
-
 void cpans_nc_loop()
 {
+
     int i;
     int c;
     while ((c = getch ()) != 'q' )
@@ -84,20 +105,64 @@ void cpans_nc_loop()
                 ITEM **items;
                 items = menu_items (cpans_menu);
                 temp[0] = '\0';
-                for (i = 0; i < item_count (cpans_menu); ++i)
-                    if (item_value (items[i]) == TRUE)
-                    {
-                        strcat (temp, item_name (items[i]));
-                        strcat (temp, " ");
+
+                /*
+                move (0, 0);
+                strcat( temp , "Now cpans will install:\n" );
+                for (i = 0; i < item_count (cpans_menu); ++i) {
+                    if (item_value(items[i]) != TRUE)
+                        continue;
+                    strcat (temp, item_name (items[i]));
+                    strcat (temp, " ");
+                }
+                strcat( temp, "\n" );
+                mvprintw( 0 , 0, temp);
+                */
+                int j = 0;
+                char ** nlist = (char**) malloc( sizeof(char*) * item_count(cpans_menu) );
+
+                for (i = 0; i < item_count (cpans_menu); ++i) {
+                    if (item_value (items[i]) != TRUE)
+                        continue;
+                    nlist[j++] = strdup( item_name( items[i] ) );
+                }
+                // XXX: end ncurses menu and window to prevent screen output breaking...
+                cpans_nc_end();
+
+                if( j == 0 ) 
+                    return;
+
+                setvbuf( stderr , 0, _IONBF, 0);
+                setvbuf( stdout , 0, _IONBF, 0);
+
+                char * prog = find_cpan_prog();
+                printf( "Found cpan program: %s\n" , prog );
+
+                printf( "Now Will Install: \n   " );
+                for(i = 0; i < j; ++i ) {
+                    printf( "%s " , nlist[i] );
+                }
+                printf( "\n" );
+
+                int status;
+                pid_t pid;
+                for(i = 0; i < j; ++i ) {
+                    pid = fork();
+                    if( pid == 0 ) {
+                        printf( "* Running %s --sudo %s\n" , prog , nlist[i] );
+                        execl( prog , "" , "--sudo" , nlist[i] , NULL );
+                        exit(0);
                     }
-                //move (20, 0);
-                //clrtoeol ();
-                mvprintw ( LINES - 5 , 0, temp);
-                refresh ();
+                    waitpid( pid , &status, NULL );
+                }
+                free( prog );
+                printf( "Done\n" );
+                return;
             }
             break;
         }
     }
+    cpans_nc_end();
 }
 
 void cpans_nc_end() 
