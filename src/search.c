@@ -139,6 +139,15 @@ void modulelist_read( moduledata_t ** mlist , int num , FILE * in )
 
 
 
+void reg_compile( regex_t * reg , const char * pattern )
+{
+    int regflag;
+    regflag = REG_NOSUB | REG_EXTENDED;
+    if (ignore_case)
+        regflag = regflag | REG_ICASE;
+    assert (regcomp (reg, pattern, regflag) == 0);
+}
+
 
 
 int search(const char * pattern)
@@ -148,22 +157,17 @@ int search(const char * pattern)
     FILE *      in;
 
     regex_t     reg;
-    int         regflag;
 
     moduledata_t ** mlist;
     int mlistsize;
 
     // compile regular expression
-    regflag = REG_NOSUB | REG_EXTENDED;
-    if( ignore_case )
-        regflag = regflag | REG_ICASE;
-    assert( regcomp( &reg , pattern , regflag ) == 0 );
+    reg_compile( &reg , pattern );
+
 
     in = fopen ( indexfile() , "rb+");
     assert( in != NULL );
-
     smeta_read( in , &smeta );
-
 
     mlistsize = smeta.modulenum;
     mlist = modulelist_new( mlistsize );
