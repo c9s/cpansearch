@@ -34,7 +34,7 @@ install from macport:
 
 ## Usage
 
---init [uri] | --fetch [uri] | -i [uri]
+--fetch [uri] | -f [uri]
 
 > initialize a source list from a specified uri:
 
@@ -45,6 +45,18 @@ install from macport:
 -i
     
 > ignore case
+
+-v
+
+> verbose
+
+-vv 
+
+> very verbose
+
+-vvv
+
+> very verbose with long module url.
 
 # Example
 
@@ -91,6 +103,9 @@ Show full url:
     # to ignore case
     $ cpans -i server
 
+    # launch ncurses ui
+    $ cpans --nc Any::
+
 ## AUTHORS
 
 c9s <cornelius.howl@gmail.com>
@@ -122,7 +137,3 @@ Mattn
     open document in browser
 
         $ cpans -d AnyEvent
-
-    ncurses UI support
-
-
