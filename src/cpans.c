@@ -34,15 +34,13 @@ static struct option long_options[] = {
 
 int main(int argc, char **argv)
 {
-
     setvbuf( stderr , 0, _IONBF, 0);
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "vif:urhnl", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:urhnl", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
-
         case 'f':
           if (optarg != NULL) {
             init( (char*)optarg);
