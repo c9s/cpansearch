@@ -23,7 +23,7 @@ void modulelist_free( moduledata_t ** mlist , int size );
 
 void modulelist_read( moduledata_t ** mlist , int num , FILE * in );
 
-moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , regex_t * reg );
+moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , size_t * newsize , regex_t * reg );
 
 
 #endif

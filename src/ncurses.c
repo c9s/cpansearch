@@ -17,21 +17,10 @@ ITEM **cpans_menu_items;
 MENU *cpans_menu;
 ITEM *cur_item;
 
-void cpans_init_items(   )
-{
-    choices = (char**)malloc( sizeof(char*) * 100 );
-    int i;
-    for ( i = 0 ; i < 100 ; i++ ) {
-        // choices[i] = (char*) malloc( sizeof(char) * 30 );
-        char item_str[100];
-        sprintf( item_str , "Choice Dyn %d" , i );
-        choices[i] = strdupa( item_str );
-    }
-}
 
-void cpans_nc_init()
+void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
 {
-    int n_choices, i;
+    int i;
 
     /* Initialize curses */
     initscr ();
@@ -40,12 +29,12 @@ void cpans_nc_init()
     keypad (stdscr, TRUE);
 
     /* Initialize items */
-    n_choices = ARRAY_SIZE(choices);
-    cpans_menu_items = (ITEM **) calloc (n_choices + 1, sizeof (ITEM *));
-    for (i = 0; i < n_choices; ++i)
-        cpans_menu_items[i] = new_item ( choices[i] , choices[i] );
+    cpans_menu_items = (ITEM **) calloc ( mlistsize + 1, sizeof (ITEM *));
+    for (i = 0; i < mlistsize; ++i)
+        cpans_menu_items[i] = new_item( strdup(mlist[i]->name) , strdup(mlist[i]->version) );
 
-    cpans_menu_items[ n_choices ] = (ITEM *) NULL;
+
+    cpans_menu_items[ mlistsize ] = (ITEM *) NULL;
 
     cpans_menu = new_menu ((ITEM **) cpans_menu_items);
 

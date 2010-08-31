@@ -43,6 +43,11 @@ int main(int argc, char **argv)
     while( (thisopt = getopt_long(argc, argv, "if:urhnl", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
+        case 'n':
+          ++ncurses;
+          ++optbind;
+          break;
+
         case 'f':
           if (optarg != NULL) {
             init( (char*)optarg);

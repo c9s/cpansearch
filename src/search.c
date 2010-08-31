@@ -21,22 +21,21 @@ render_search_ncurses (
     int mlistsize,
     regex_t * reg)
 {
-    modulelist_t * mlist_new = modulelist_filter( mlist , mlistsize , reg );
-
-    cpans_init_items();
-
-    cpans_nc_init();
-
+    size_t newsize;
+    moduledata_t ** mlist_new = modulelist_filter( mlist , mlistsize , &newsize , reg );
+    cpans_nc_init( mlist_new , newsize );
     cpans_nc_loop();
-
     cpans_nc_end();
+    modulelist_free( mlist_new , newsize );
 }
 
-moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , regex_t * reg )
+
+moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , size_t * newsize , regex_t * reg )
 {
     int i;
     int ir; // result index
 
+    ir = 0;
     moduledata_t ** mlist_new;
     moduledata_t * mitem;
 
@@ -45,8 +44,15 @@ moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , re
     for(i=0;i<mlistsize;i++) {
         if( module_filter( reg , mlist[i] ) == 0 )
             continue;
-        mlist_new[ ir++ ] = mlist[i];
+
+        mlist_new[ir] = (moduledata_t *) malloc (sizeof (moduledata_t));
+        memset( mlist_new[ir] , 0 , sizeof(moduledata_t) );
+
+        mlist_new[ir] = mlist[i];
+        memcpy( mlist_new[ir] , mlist[i] , sizeof(moduledata_t) );
+        ++ir;
     }
+    *newsize = ir;
     return mlist_new;
 }
 
@@ -204,6 +210,13 @@ int search(const char * pattern)
     mlist = modulelist_new( mlistsize );
     modulelist_read( mlist, mlistsize , in );
     fclose(in);
+
+
+    if( ncurses ) {
+        render_search_ncurses( mlist , mlistsize , &reg );
+        modulelist_free( mlist , mlistsize );
+        return 0;
+    }
 
     switch (verbose) 
     {
