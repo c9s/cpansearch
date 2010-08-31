@@ -10,6 +10,7 @@ extern char version[];
 extern char ignore_case;
 extern char fullurl;
 extern char nameonly;
+extern char verbose;
 
 int search(const char * pattern) {
 
@@ -46,16 +47,23 @@ int search(const char * pattern) {
         fread( &mdata , sizeof(moduledata_t) , 1 , in );
 
         if( regexec( &reg , mdata.name  , 1 , matchlist , 0 ) == 0 ) {
-            if( nameonly ) {
-                printf( "%s\n" , mdata.name );
-            }
-            else if( fullurl ) {
-                sprintf( longurl , "%s/authors/id/%s" , hosturl , mdata.path );
-                printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , longurl );
-            }
+            if( verbose ) {
+                printf( "%s" , mdata.name );
+                if( fullurl ) {
+                    sprintf( longurl , "%s/authors/id/%s" , hosturl , mdata.path );
+                    printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , longurl );
+                }
+                else {
+                    printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , mdata.path );
+                }
+            } 
             else {
-                printf( "%-40s - %s (%s)\n" , mdata.name , mdata.version , mdata.path );
+                if( strcmp(mdata.version,"0") != 0 ) {
+                    // printf( "%s %s\n" , mdata.name , mdata.version );
+                    printf( "%s\n" , mdata.name );
+                }
             }
+
         }
     }
     fclose(in);

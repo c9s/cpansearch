@@ -55,9 +55,8 @@ void cpans_nc_init()
     /* Make the menu multi valued */
     menu_opts_off( cpans_menu, O_ONEVALUE);
 
-    mvprintw (LINES - 3, 0, "Use <SPACE> to select or unselect an item.");
-    mvprintw (LINES - 2, 0,
-              "<ENTER> to see presently selected items(F1 to Exit)");
+    mvprintw (LINES - 3, 0, "<SPACE>: select item.  <Q>: quit. <J/K>: move item.");
+    mvprintw (LINES - 2, 0, "<ENTER> to install selected modules.");
     post_menu (cpans_menu);
     refresh ();
 }
@@ -71,11 +70,6 @@ void cpans_nc_loop()
     {
         switch (c)
         {
-
-        case 'c':
-            // menu_driver(cpans_menu, REQ_CLEAR_PATTERN);
-
-            break;
 
         case 'j':
         case KEY_DOWN:

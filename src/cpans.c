@@ -12,8 +12,7 @@
 char version[] = "0.2";
 char ignore_case = 0;
 char fullurl     = 0;
-char nameonly    = 0;
-
+char verbose     = 0;
 
 void print_version()
 {
@@ -31,8 +30,7 @@ static struct option long_options[] = {
   { "recent"    , no_argument      , 0 , 'r' },
   { "help"      , no_argument      , 0 , 'h' },
   { "url"       , no_argument      , 0 , 'l' },
-  { "name"      , no_argument      , 0 , 'n' },
-  { "version"   , no_argument      , 0 , 'v' },
+  { "verbose"   , no_argument      , 0 , 'v' },
 };
 /* getopt setting end */
 
@@ -47,7 +45,7 @@ int main(int argc, char **argv)
 
       switch (thisopt) {
         case 'v':
-            print_version();
+            verbose = 1;
             return 0;
 
         case 'f':
@@ -65,11 +63,6 @@ int main(int argc, char **argv)
 
         case 'l':
           fullurl = 1;
-          ++optbind;
-          break;
-
-        case 'n':
-          nameonly = 1;
           ++optbind;
           break;
 
