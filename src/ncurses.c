@@ -5,22 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
-//#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+// XXX: 
 #define ARRAY_SIZE(a) ( 100 )
 #define CTRLD 	4
 
 char **choices;
-
-//  char *choices[] = {
-//      "Choice 1",
-//      "Choice 2",
-//      "Choice 3",
-//      "Choice 4",
-//      "Choice 5",
-//      "Choice 6",
-//      "Choice 7"
-//  };
 
 ITEM **cpans_menu_items;
 MENU *cpans_menu;
