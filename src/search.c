@@ -7,6 +7,8 @@
 
 #include "cpans.h"
 #include "utils.h"
+#include "search.h"
+#include "nc.h"
 
 extern char version[];
 extern char ignore_case;
@@ -19,16 +21,33 @@ render_search_ncurses (
     int mlistsize,
     regex_t * reg)
 {
+    modulelist_t * mlist_new = modulelist_filter( mlist , mlistsize , reg );
 
+    cpans_init_items();
 
+    cpans_nc_init();
 
+    cpans_nc_loop();
 
+    cpans_nc_end();
 }
 
-moduledata_t ** modulelist_filter( regex_t * reg , moduledata_t * mlist )
+moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , regex_t * reg )
 {
+    int i;
+    int ir; // result index
 
+    moduledata_t ** mlist_new;
+    moduledata_t * mitem;
 
+    mlist_new = modulelist_new( mlistsize );
+
+    for(i=0;i<mlistsize;i++) {
+        if( module_filter( reg , mlist[i] ) == 0 )
+            continue;
+        mlist_new[ ir++ ] = mlist[i];
+    }
+    return mlist_new;
 }
 
 int module_filter( regex_t * reg , moduledata_t * mitem )

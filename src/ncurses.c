@@ -1,9 +1,11 @@
-#include <ncurses.h>
-#include <curses.h>
-#include <menu.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ncurses.h>
+#include <curses.h>
+#include <menu.h>
+#include "nc.h"
+#include "cpans.h"
 
 // XXX: 
 #define ARRAY_SIZE(a) ( 100 )
@@ -15,7 +17,7 @@ ITEM **cpans_menu_items;
 MENU *cpans_menu;
 ITEM *cur_item;
 
-void cpans_init_items()
+void cpans_init_items(   )
 {
     choices = (char**)malloc( sizeof(char*) * 100 );
     int i;
@@ -23,7 +25,7 @@ void cpans_init_items()
         // choices[i] = (char*) malloc( sizeof(char) * 30 );
         char item_str[100];
         sprintf( item_str , "Choice Dyn %d" , i );
-        choices[i] = strdup( item_str );
+        choices[i] = strdupa( item_str );
     }
 }
 

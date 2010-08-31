@@ -17,4 +17,6 @@ typedef struct {
     char reserved[100];
 } moduledata_t;
 
+typedef moduledata_t* modulelist_t;
+
 #endif
