@@ -70,7 +70,7 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     /* Make the menu multi valued */
     menu_opts_off( cpans_menu, O_ONEVALUE);
 
-    mvprintw (LINES - 3, 0, "<SPACE>: select item.  <q>: quit. <j/k>: move item.");
+    mvprintw (LINES - 3, 0, "<SPACE>: select item.  <q>: quit. <j/k>: move cursor.");
     mvprintw (LINES - 2, 0, "<ENTER> to install selected modules. <g>: to install selected items.");
     post_menu (cpans_menu);
     refresh ();
