@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     setvbuf( stdout , 0, _IONBF, 0);
 
     int optbind = 0;
-    while( (thisopt = getopt_long(argc, argv, "if:urhnl", long_options, &option_index)) != -1 ) {
+    while( (thisopt = getopt_long(argc, argv, "if:urhnlv", long_options, &option_index)) != -1 ) {
 
       switch (thisopt) {
         case 'n':
