@@ -13,6 +13,10 @@ modules.
 
 * glib
 
+* ncurses
+
+* menu
+
 ### Binary
 
     $ wget http://github.com/c9s/cpansearch/raw/master/binary/cpans-linux-i386 -O cpans
