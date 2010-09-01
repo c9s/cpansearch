@@ -39,6 +39,7 @@ char * find_cpan_prog()
     return path;
 }
 
+
 void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
 {
     int i;
@@ -101,6 +102,28 @@ void cpans_nc_loop()
             menu_driver(cpans_menu, REQ_TOGGLE_ITEM);
             break;
 
+        // launch perldoc
+        case 'p':
+            {
+                ITEM *cur;
+				cur = current_item(cpans_menu);
+                char * name = item_name(cur);
+                gchar * prog = g_find_program_in_path("perldoc");
+                int status;
+                pid_t pid;
+                pid = fork();
+                if( pid == 0 ) {
+                    erase();
+                    refresh();
+                    execl( prog , "" , name , NULL );
+                    exit(0);
+                }
+                waitpid( pid , &status, 0 );
+                free( prog );
+                redrawwin( stdscr );
+            }
+            break;
+
         case 10:               /* Enter */
             {
                 // scan selected items
@@ -153,10 +176,10 @@ void cpans_nc_loop()
                     pid = fork();
                     if( pid == 0 ) {
                         printf( "* Running %s --sudo %s\n" , prog , nlist[i] );
-                        execl( prog , "" , "--sudo" , nlist[i] , NULL );
+                        execl( prog , "" , "--sudo" , nlist[i] , 0 );
                         exit(0);
                     }
-                    waitpid( pid , &status, NULL );
+                    waitpid( pid , &status, 0 );
                 }
                 free( prog );
                 printf( "Done\n" );
@@ -175,3 +198,4 @@ void cpans_nc_end()
     free_menu (cpans_menu);
     endwin ();
 }
+
