@@ -24,6 +24,32 @@ ITEM **cpans_menu_items;
 MENU *cpans_menu;
 ITEM *cur_item;
 
+
+char * modulename_path( const char * hosturl , char * name )
+{
+    char path[300] = {0};
+
+    strcat( path , hosturl );
+    strcat( path , "/dist/" );
+
+
+    char * c;
+    c = name;
+    int i;
+    int j = strlen(path);
+    for (i = 0; i < strlen (name); i++) {
+        if( name[i] == ':' && name[i+1] == ':' ) {
+            i++;
+            path[j++] = '-';
+        }
+        else {
+            path[j++] = name[i];
+        }
+    }
+    return strdup( path );
+}
+
+
 char * find_cpan_prog()
 {
     gchar * path;
@@ -72,7 +98,7 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     menu_opts_off( cpans_menu, O_ONEVALUE);
 
     mvprintw (LINES - 3, 0, "<SPACE>: select item.  <q>: quit. <j/k>: move cursor.");
-    mvprintw (LINES - 2, 0, "<ENTER> to install selected modules. <g>: to install selected items.");
+    mvprintw (LINES - 2, 0, "<ENTER> to install. <p>: perldoc. <b>: browse on search.cpan.org");
     post_menu (cpans_menu);
     refresh ();
 }
@@ -102,6 +128,38 @@ void cpans_nc_loop()
             menu_driver(cpans_menu, REQ_TOGGLE_ITEM);
             break;
 
+        case 'b':
+            {
+                ITEM *cur;
+				cur = current_item(cpans_menu);
+                char * name = item_name(cur);
+
+                char * url  = modulename_path( "http://search.cpan.org" , name );
+                // mvprintw (LINES - 3, 0, url );
+
+                gchar * prog;
+                prog = g_find_program_in_path("google-chrome");
+                if( prog == NULL )
+                    prog = g_find_program_in_path("firefox");
+                if( prog == NULL )
+                    break;
+
+                char * name_t;
+
+                int status;
+                pid_t pid = fork();
+                if( pid == 0 ) {
+                    erase();
+                    refresh();
+                    execl( prog , "" , url , NULL );
+                    exit(0);
+                }
+                waitpid( pid , &status, 0 );
+                free( prog );
+                redrawwin( stdscr );
+            }
+            break;
+
         // launch perldoc
         case 'p':
             {
@@ -110,8 +168,7 @@ void cpans_nc_loop()
                 char * name = item_name(cur);
                 gchar * prog = g_find_program_in_path("perldoc");
                 int status;
-                pid_t pid;
-                pid = fork();
+                pid_t pid = fork();
                 if( pid == 0 ) {
                     erase();
                     refresh();
