@@ -217,6 +217,14 @@ void openperldoc()
 void cpans_nc_loop()
 {
 
+    /*
+     TODO: 
+        add 'd' command for "Download module"
+        add 'x' command for "Download and Extract module"
+        add 't' or 'n' command for "Notest Install"
+        add 'Ctrl-d/u' for page up/down.
+        add '/' command for filtering module list.
+     * */
     int c;
     while ((c = getch ()) != 'q' )
     {
