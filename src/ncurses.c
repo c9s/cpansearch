@@ -98,11 +98,13 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     menu_opts_off( cpans_menu, O_ONEVALUE );
 
     char temp[100];
-    sprintf( temp , "Found %d packages." , (int) mlistsize );
-    mvprintw (LINES - 4, 0, temp );
+    sprintf( temp , "==== Found %d packages ====" , (int) mlistsize );
+    mvprintw (LINES - 5, 0, temp );
 
+    // XXX: show a help window here.
     mvprintw (LINES - 3, 0, "<SPACE/ENTER>: select item.  <q>: quit. <j/k>: move cursor.");
-    mvprintw (LINES - 2, 0, "<g> to install. <p>: perldoc. <b>: browse on search.cpan.org");
+    mvprintw (LINES - 2, 0, "<g> start to install. <G>: start to install in parallel. ");
+    mvprintw (LINES - 1, 0, "<p>: perldoc. <b>: browse on search.cpan.org");
     post_menu (cpans_menu);
     refresh ();
 }
