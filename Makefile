@@ -25,7 +25,7 @@ all: $(PROG)
 $(PROG): $(OBJS)
 		$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(PROG)
 		@echo "----------------"
-		@echo "When you upgrade cpans, please update the source data again with -i option:"
+		@echo "When you upgrade cpans, please update the source data again with -f option:"
 		@echo "   cpans -f http://cpan.perl.org/"
 		@echo "----------------"
 
