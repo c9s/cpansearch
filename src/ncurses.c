@@ -98,7 +98,7 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     menu_opts_off( cpans_menu, O_ONEVALUE );
 
     char temp[100];
-    sprintf( temp , "Found %d packages." , mlistsize );
+    sprintf( temp , "Found %d packages." , (int) mlistsize );
     mvprintw (LINES - 4, 0, temp );
 
     mvprintw (LINES - 3, 0, "<SPACE/ENTER>: select item.  <q>: quit. <j/k>: move cursor.");
@@ -117,7 +117,7 @@ void openweb()
     pid_t pid;
 
     cur = current_item(cpans_menu);
-    name = item_name(cur);
+    name = (char*)item_name(cur);
     url  = modulename_path( "http://search.cpan.org" , name );
 
     prog = g_find_program_in_path("google-chrome");
@@ -138,11 +138,66 @@ void openweb()
     redrawwin( stdscr );
 }
 
+
+char ** get_selected_names(int * length)
+{
+    ITEM **items;
+    int j,i;
+    char ** nlist;
+
+    j = 0;
+    items = menu_items (cpans_menu);
+    nlist = (char**) malloc( sizeof(char*) * item_count(cpans_menu) );
+    for (i = 0; i < item_count (cpans_menu); ++i) {
+        if (item_value (items[i]) != TRUE)
+            continue;
+        nlist[j++] = strdup( item_name( items[i] ) );
+    }
+    *length = j;
+    return nlist;
+}
+
+
+void install_modules(char * prog, char **nlist , int len, int wait)
+{
+    pid_t pidlist[100];
+    pid_t pid;
+    int status;
+    int i;
+
+    printf( "Now Will Install: \n   " );
+    for(i = 0; i < len; ++i )
+        printf( "%s " , nlist[i] );
+    printf( "\n" );
+
+    for(i = 0; i < len; ++i ) {
+        pid = fork();
+        if( pid == 0 ) {
+            printf( "* Running %s --sudo %s\n" , prog , nlist[i] );
+            execl( prog , "" , "--sudo" , nlist[i] , 0 );
+            exit(0);
+        }
+        if( wait )
+            waitpid( pid , &status, 0 );
+        else
+            pidlist[i] = pid; // save pid to pidlist
+    }
+
+    if( ! wait ) {
+        printf( "Waiting for installation finish.\n" );
+        for(i = 0; i < len; ++i )
+            waitpid( pidlist[i] , &status, 0 );
+    }
+    printf( "Installation Done\n" );
+}
+
+
+
 void openperldoc()
 {
     ITEM *cur;
     cur = current_item(cpans_menu);
-    char * name = item_name(cur);
+    char * name = (char*) item_name(cur);
     gchar * prog = g_find_program_in_path("perldoc");
     int status;
     pid_t pid = fork();
@@ -157,11 +212,9 @@ void openperldoc()
     redrawwin( stdscr );
 }
 
-
 void cpans_nc_loop()
 {
 
-    int i;
     int c;
     while ((c = getch ()) != 'q' )
     {
@@ -193,34 +246,17 @@ void cpans_nc_loop()
             openperldoc();
             break;
 
-        case 'g':               /* g */
+        case 'G':
             {
                 // scan selected items
                 char temp[200];
-                ITEM **items;
-                items = menu_items (cpans_menu);
+                char ** nlist;
+                int j;
+
                 temp[0] = '\0';
+                j = 0;
+                nlist = get_selected_names( &j );
 
-                /*
-                move (0, 0);
-                strcat( temp , "Now cpans will install:\n" );
-                for (i = 0; i < item_count (cpans_menu); ++i) {
-                    if (item_value(items[i]) != TRUE)
-                        continue;
-                    strcat (temp, item_name (items[i]));
-                    strcat (temp, " ");
-                }
-                strcat( temp, "\n" );
-                mvprintw( 0 , 0, temp);
-                */
-                int j = 0;
-                char ** nlist = (char**) malloc( sizeof(char*) * item_count(cpans_menu) );
-
-                for (i = 0; i < item_count (cpans_menu); ++i) {
-                    if (item_value (items[i]) != TRUE)
-                        continue;
-                    nlist[j++] = strdup( item_name( items[i] ) );
-                }
                 // XXX: end ncurses menu and window to prevent screen output breaking...
                 cpans_nc_end();
 
@@ -233,25 +269,35 @@ void cpans_nc_loop()
                 char * prog = find_cpan_prog();
                 printf( "Found cpan program: %s\n" , prog );
 
-                printf( "Now Will Install: \n   " );
-                for(i = 0; i < j; ++i ) {
-                    printf( "%s " , nlist[i] );
-                }
-                printf( "\n" );
-
-                int status;
-                pid_t pid;
-                for(i = 0; i < j; ++i ) {
-                    pid = fork();
-                    if( pid == 0 ) {
-                        printf( "* Running %s --sudo %s\n" , prog , nlist[i] );
-                        execl( prog , "" , "--sudo" , nlist[i] , 0 );
-                        exit(0);
-                    }
-                    waitpid( pid , &status, 0 );
-                }
+                install_modules( prog , nlist , j , 0 );
                 free( prog );
-                printf( "Done\n" );
+                return;
+            }
+            break;
+
+        case 'g':               /* g */
+            {
+                // scan selected items
+                char ** nlist;
+                int j;
+
+                j = 0;
+                nlist = get_selected_names( &j );
+
+                // XXX: end ncurses menu and window to prevent screen output breaking...
+                cpans_nc_end();
+
+                if( j == 0 ) 
+                    return;
+
+                setvbuf( stderr , 0, _IONBF, 0);
+                setvbuf( stdout , 0, _IONBF, 0);
+
+                char * prog = find_cpan_prog();
+                printf( "Found cpan program: %s\n" , prog );
+
+                install_modules( prog , nlist , j , 1 ); // wait for each installation
+                free( prog );
                 return;
             }
             break;
