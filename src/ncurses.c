@@ -107,6 +107,57 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     refresh ();
 }
 
+void openweb()
+{
+    ITEM *cur;
+    char * name;
+    char * url;
+    gchar * prog;
+    int status;
+    pid_t pid;
+
+    cur = current_item(cpans_menu);
+    name = item_name(cur);
+    url  = modulename_path( "http://search.cpan.org" , name );
+
+    prog = g_find_program_in_path("google-chrome");
+    if( prog == NULL )
+        prog = g_find_program_in_path("firefox");
+    if( prog == NULL )
+        return;
+
+    pid = fork();
+    if( pid == 0 ) {
+        erase();
+        refresh();
+        execl( prog , "" , url , NULL );
+        exit(0);
+    }
+    waitpid( pid , &status, 0 );
+    free( prog );
+    redrawwin( stdscr );
+}
+
+void openperldoc()
+{
+    ITEM *cur;
+    cur = current_item(cpans_menu);
+    char * name = item_name(cur);
+    gchar * prog = g_find_program_in_path("perldoc");
+    int status;
+    pid_t pid = fork();
+    if( pid == 0 ) {
+        erase();
+        refresh();
+        execl( prog , "" , name , NULL );
+        exit(0);
+    }
+    waitpid( pid , &status, 0 );
+    free( prog );
+    redrawwin( stdscr );
+}
+
+
 void cpans_nc_loop()
 {
 
@@ -134,54 +185,12 @@ void cpans_nc_loop()
             break;
 
         case 'b':
-            {
-                ITEM *cur;
-				cur = current_item(cpans_menu);
-                char * name = item_name(cur);
-
-                char * url  = modulename_path( "http://search.cpan.org" , name );
-
-                gchar * prog;
-                prog = g_find_program_in_path("google-chrome");
-                if( prog == NULL )
-                    prog = g_find_program_in_path("firefox");
-                if( prog == NULL )
-                    break;
-
-                int status;
-                pid_t pid = fork();
-                if( pid == 0 ) {
-                    erase();
-                    refresh();
-                    // mvprintw (LINES - 3, 0, url );
-                    execl( prog , "" , url , NULL );
-                    exit(0);
-                }
-                waitpid( pid , &status, 0 );
-                free( prog );
-                redrawwin( stdscr );
-            }
+            openweb();
             break;
 
         // launch perldoc
         case 'p':
-            {
-                ITEM *cur;
-				cur = current_item(cpans_menu);
-                char * name = item_name(cur);
-                gchar * prog = g_find_program_in_path("perldoc");
-                int status;
-                pid_t pid = fork();
-                if( pid == 0 ) {
-                    erase();
-                    refresh();
-                    execl( prog , "" , name , NULL );
-                    exit(0);
-                }
-                waitpid( pid , &status, 0 );
-                free( prog );
-                redrawwin( stdscr );
-            }
+            openperldoc();
             break;
 
         case 'g':               /* g */
