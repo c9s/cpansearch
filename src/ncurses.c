@@ -97,8 +97,8 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
     /* Make the menu multi valued */
     menu_opts_off( cpans_menu, O_ONEVALUE);
 
-    mvprintw (LINES - 3, 0, "<SPACE>: select item.  <q>: quit. <j/k>: move cursor.");
-    mvprintw (LINES - 2, 0, "<ENTER> to install. <p>: perldoc. <b>: browse on search.cpan.org");
+    mvprintw (LINES - 3, 0, "<SPACE/ENTER>: select item.  <q>: quit. <j/k>: move cursor.");
+    mvprintw (LINES - 2, 0, "<g> to install. <p>: perldoc. <b>: browse on search.cpan.org");
     post_menu (cpans_menu);
     refresh ();
 }
@@ -124,6 +124,7 @@ void cpans_nc_loop()
             break;
 
         // toggle item
+        case 10:  // <Enter>
         case ' ':
             menu_driver(cpans_menu, REQ_TOGGLE_ITEM);
             break;
@@ -181,7 +182,7 @@ void cpans_nc_loop()
             }
             break;
 
-        case 10:               /* Enter */
+        case 'g':               /* g */
             {
                 // scan selected items
                 char temp[200];
