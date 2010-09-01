@@ -89,13 +89,17 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
 
     cpans_menu = new_menu ((ITEM **) cpans_menu_items);
 
-    set_menu_format( cpans_menu , LINES - 6 , 1 );
-    set_menu_mark(   cpans_menu , " * ");
-    set_menu_pad(    cpans_menu , 10 );
+    set_menu_format(     cpans_menu , LINES - 5 , 2 );
+    set_menu_mark(       cpans_menu , " * ");
+    set_menu_pad(        cpans_menu , 3 );
     set_menu_spacing(    cpans_menu , 5 , 0 , 0 );
 
     /* Make the menu multi valued */
-    menu_opts_off( cpans_menu, O_ONEVALUE);
+    menu_opts_off( cpans_menu, O_ONEVALUE );
+
+    char temp[100];
+    sprintf( temp , "Found %d packages." , mlistsize );
+    mvprintw (LINES - 4, 0, temp );
 
     mvprintw (LINES - 3, 0, "<SPACE/ENTER>: select item.  <q>: quit. <j/k>: move cursor.");
     mvprintw (LINES - 2, 0, "<g> to install. <p>: perldoc. <b>: browse on search.cpan.org");
@@ -136,7 +140,6 @@ void cpans_nc_loop()
                 char * name = item_name(cur);
 
                 char * url  = modulename_path( "http://search.cpan.org" , name );
-                // mvprintw (LINES - 3, 0, url );
 
                 gchar * prog;
                 prog = g_find_program_in_path("google-chrome");
@@ -145,13 +148,12 @@ void cpans_nc_loop()
                 if( prog == NULL )
                     break;
 
-                char * name_t;
-
                 int status;
                 pid_t pid = fork();
                 if( pid == 0 ) {
                     erase();
                     refresh();
+                    // mvprintw (LINES - 3, 0, url );
                     execl( prog , "" , url , NULL );
                     exit(0);
                 }
