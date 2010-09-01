@@ -89,7 +89,7 @@ void cpans_nc_init( moduledata_t ** mlist , size_t mlistsize )
 
     cpans_menu = new_menu ((ITEM **) cpans_menu_items);
 
-    set_menu_format(     cpans_menu , LINES - 5 , 2 );
+    set_menu_format(     cpans_menu , LINES - 5 , 1 );
     set_menu_mark(       cpans_menu , " * ");
     set_menu_pad(        cpans_menu , 3 );
     set_menu_spacing(    cpans_menu , 5 , 0 , 0 );
