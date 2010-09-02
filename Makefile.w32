@@ -1,7 +1,7 @@
 
 PROG=cpans
-SRCS=cpans.c membuf.c
-CFLAGS=-mms-bitfields -Ic:/gtk/include/glib-2.0 -Ic:/gtk/lib/glib-2.0/include
+SRCS=src/*.c
+CFLAGS=-mms-bitfields -Iinclude -Ic:/gtk/include/glib-2.0 -Ic:/gtk/lib/glib-2.0/include
 LDFLAGS=-Lc:/gtk/lib -lglib-2.0 -lintl -lcurldll -lws2_32 -lssh2 -lssl -leay32 -lzdll -lregex
 OBJS=$(SRCS:.c=.o)
 
