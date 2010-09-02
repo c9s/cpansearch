@@ -35,10 +35,8 @@ moduledata_t ** modulelist_filter( moduledata_t ** mlist , size_t mlistsize , si
 
     ir = 0;
     moduledata_t ** mlist_new;
-    moduledata_t * mitem;
 
     mlist_new = modulelist_new( mlistsize );
-
     for(i=0;i<mlistsize;i++) {
         if( module_filter( reg , mlist[i] ) == 0 )
             continue;
