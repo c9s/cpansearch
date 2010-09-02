@@ -221,9 +221,11 @@ void cpans_nc_loop()
      TODO: 
         add 'd' command for "Download module"
         add 'x' command for "Download and Extract module"
-        add 't' or 'n' command for "Notest Install"
+        add XXX command for "Notest Install"
         add 'Ctrl-d/u' for page up/down.
-        add '/' command for filtering module list.
+        add Ctrl-F to filter list
+        add '/' command to search module, n for next item, N for previous item
+
      * */
     int c;
     while ((c = getch ()) != 'q' )
