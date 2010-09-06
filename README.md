@@ -5,30 +5,34 @@ cpansearch
 cpansearch is written in C, provides a quick interface for searching cpan
 modules.
 
-## To install
+## MAIN FEATURES
 
-**REQUIREMENT**
+* ncurses UI support.
+* very fast.
+* parallel module installation.
+* doesn't require root permission.
+
+## TO INSTALL
+
+### REQUIREMENT
 
 * curl
-
 * glib
-
 * ncurses
-
 * menu
 
-### Binary
+### BINARY
 
     $ wget http://github.com/c9s/cpansearch/raw/master/binary/cpans-linux-i386 -O cpans
     $ chmod +x cpans
     $ cp cpans ~/bin/
 
-### Build - For debian-based system:
+### BUILD - For debian-based system:
 
     $ sudo apt-get install libcurl4-openssl-dev libglib2.0-dev
     $ make install
 
-### Build - For mac users:
+### BUILD - For mac users:
 
 install from macport:
 
@@ -36,7 +40,7 @@ install from macport:
     $ perl Makefile.PL
     $ make install
 
-## Usage
+## USAGE
 
 --fetch [uri] | -f [uri]
 
@@ -62,25 +66,29 @@ install from macport:
 
 > very verbose with long module url.
 
-# Example
+# EXAMPLE
 
 ## To initialize source list datafile.
 
-    $ cpans --fetch http://cpan.nctu.edu.tw/
+    $ cpans -f http://cpan.nctu.edu.tw/
 
     # this will autodetect local mirror from .minicpanrc
-    $ cpans --fetch
+    $ cpans -f
 
     # the same
-    $ cpans -f
+    $ cpans --fetch
 
 ## To update list
 
-    $ cpans --update
-
     $ cpans -u
 
+    $ cpans --update
+
 ## To search modules
+
+Launch ncurses ui with search result:
+
+    $ cpans --nc Any::
 
 Supports posix extended regular expression:
 
@@ -107,8 +115,6 @@ Show full url:
     # to ignore case
     $ cpans -i server
 
-    # launch ncurses ui
-    $ cpans --nc Any::
 
 ## AUTHORS
 
