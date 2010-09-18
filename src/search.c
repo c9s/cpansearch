@@ -59,8 +59,10 @@ int module_filter( regex_t * reg , moduledata_t * mitem )
         return 0;
 
     // XXX: add an opt for ignoring 0 version modules
+    /*
     if( strcmp(mitem->version,"0") == 0 )
         return 0;
+        */
 
     return 1;
 }
