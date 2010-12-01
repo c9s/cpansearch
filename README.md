@@ -29,7 +29,7 @@ modules.
 
 ### BUILD - For debian-based system:
 
-    $ sudo apt-get install libcurl4-openssl-dev libglib2.0-dev
+    $ sudo apt-get install libcurl4-openssl-dev libglib2.0-dev libncurses-dev
     $ make install
 
 ### BUILD - For mac users:
