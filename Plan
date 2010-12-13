@@ -5,7 +5,9 @@
     Enter for perldoc
     g for pick
     G for install
-
+* Show local version
+* Check local perldoc
 * Module Name Search from inputbox
 * Listing Dependency from META.yml
+* BackPAN search
 * Migrate to perl.
