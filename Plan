@@ -1,5 +1,11 @@
 
 * Support C-d, C-u for page down/up
+* Support /,n,N for filtering
+* Change key mapping:
+    Enter for perldoc
+    g for pick
+    G for install
+
 * Module Name Search from inputbox
 * Listing Dependency from META.yml
 * Migrate to perl.
