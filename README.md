@@ -7,10 +7,10 @@ modules.
 
 ## MAIN FEATURES
 
-* ncurses UI support.
-* very fast.
+* ncurses UI.
+* fast.
+* regular expression.
 * parallel module installation.
-* doesn't require root permission.
 
 ## TO INSTALL
 
