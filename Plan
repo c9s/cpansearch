@@ -1,4 +1,10 @@
 
+
+
+* support more options
+    $ cpans Moose --nc --cpan /usr/bin/cpanm --exclude blah --mirror file:///var/minicpan/
+
+
 * Support C-d, C-u for page down/up
 * Support /,n,N for filtering
 * Change key mapping:
