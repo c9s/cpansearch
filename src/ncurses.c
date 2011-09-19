@@ -175,8 +175,8 @@ void install_modules(char * prog, char **nlist , int len, int wait)
     for(i = 0; i < len; ++i ) {
         pid = fork();
         if( pid == 0 ) {
-            printf( "* Running %s --sudo %s\n" , prog , nlist[i] );
-            execl( prog , "" , "--sudo" , nlist[i] , 0 );
+            printf( "* Running %s %s\n" , prog , nlist[i] );
+            execl( prog , "" , " " , nlist[i] , 0 );
             exit(0);
         }
         if( wait )
