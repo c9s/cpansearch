@@ -4,12 +4,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <glib.h>
-
 #include "cpans.h"
 #include "membuf.h"
 #include "utils.h"
 
-int init( char * mirror_site ) {
+int init( char * mirror_site ) 
+{
 
     char url[256];
     membuf * mbuf;
@@ -46,7 +46,8 @@ int init( char * mirror_site ) {
     return 0;
 }
 
-void init_local ( char * localpath ) {
+void init_local ( char * localpath ) 
+{
 
 
 }
@@ -86,4 +87,6 @@ void init_from_minicpanrc ( char * minicpanrc ) {
 
     printf( "Found minicpanrc: %s\n" , localpath );
     init( localpath );
+
 }
+
