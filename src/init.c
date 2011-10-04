@@ -52,7 +52,7 @@ void init_local ( char * localpath )
 
 }
 
-char *  find_minicpanrc()
+char * find_minicpanrc()
 {
     char *rc = (char*) malloc(  sizeof(char) * 100 );
     sprintf( rc , "%s/.minicpanrc" , g_get_home_dir() );
@@ -87,6 +87,5 @@ void init_from_minicpanrc ( char * minicpanrc ) {
 
     printf( "Found minicpanrc: %s\n" , localpath );
     init( localpath );
-
 }
 

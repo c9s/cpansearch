@@ -1,0 +1,6 @@
+
+# Branch: reduce-dependency 
+
+* Remove glib from dependency.
+* Should only depends on libcurl (built-in on Mac OS).
+* Platform checking, should support Windows, Linux, Mac OS.
