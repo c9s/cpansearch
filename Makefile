@@ -6,7 +6,6 @@ CFLAGS= -I. -Iinclude/ -Wall -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl
 
 CFLAGS+= -lmenu -lncurses 
 
-
 LDFLAGS= $$(pkg-config --libs  glib-2.0 libcurl)
 
 SRCS= src/cpans.c \
