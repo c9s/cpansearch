@@ -2,14 +2,14 @@
 PROG=cpans
 
 # CFLAGS= -I. -Iinclude/ -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
-CFLAGS= -I. -Iinclude/ -Wall -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl) -D_GNU_SOURCE
+# CFLAGS= -I. -Iinclude/ -Wall -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl) -D_GNU_SOURCE
+CFLAGS= -I. -Iinclude/ -Wall -g $$(pkg-config --cflags glib-2.0 libcurl)
 
 CFLAGS+= -lmenu -lncurses 
 
-
 LDFLAGS= $$(pkg-config --libs  glib-2.0 libcurl)
 
-SRCS= src/cpans.c \
+SRCS=src/cpans.c \
 	src/membuf.c \
 	src/help.c \
 	src/utils.c \
@@ -32,11 +32,10 @@ $(PROG): $(OBJS)
 install: $(PROG)
 		./cpans --fetch http://cpan.perl.org/
 		mkdir -p    /usr/bin
-		cp $(PROG) /usr/bin
+		cp -v $(PROG) /usr/bin
 
 test:
 		true
 
 clean:  
-		rm -rf $(PROG) $(OBJS)
-
+		rm -rvf $(PROG) $(OBJS)
