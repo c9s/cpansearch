@@ -88,7 +88,6 @@ void slist_transform( const char * url , const char * sourcefile ) {
         s2 = skipspace( s2 );
 
         s1 = s2;
-        s2 = s2;
         s2 = skipword( s2 );
         if( s1 == s2 ) break;
         memcpy( mdata.version , s1 , (s2-s1) );
