@@ -54,8 +54,7 @@ void init_local ( char * localpath ) {
 char *  find_minicpanrc()
 {
     char *rc = (char*) malloc(  sizeof(char) * 100 );
-    char *home = getenv("HOME");
-    sprintf( rc , "%s/.minicpanrc" , home );
+    sprintf( rc , "%s/.minicpanrc" , g_get_home_dir() );
     if (!file_test (rc))
         return NULL;
     return rc;

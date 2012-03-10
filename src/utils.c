@@ -10,9 +10,8 @@
 
 char * indexfile() {
     /* return ~/.cpansearch.dat */
-    char *home = getenv("HOME");
     char *datafile = malloc(256*sizeof(char));
-    sprintf( datafile, "%s/.cpansearch.dat", home );
+    sprintf( datafile, "%s/.cpansearch.dat", g_get_home_dir() );
     return datafile;
 }
 
