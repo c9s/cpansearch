@@ -3,11 +3,11 @@ PROG=cpans
 
 # CFLAGS= -I. -Iinclude/ -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
 # CFLAGS= -I. -Iinclude/ -Wall -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl) -D_GNU_SOURCE
-CFLAGS= -I. -Iinclude/ -Wall -g $$(pkg-config --cflags glib-2.0 libcurl)
+CFLAGS= -I. -Iinclude/ -Wall -g $$(pkg-config --cflags glib-2.0 libcurl) 
 
 CFLAGS+= -lmenu -lncurses 
 
-LDFLAGS= $$(pkg-config --libs  glib-2.0 libcurl)
+LDFLAGS= $$(pkg-config --static --libs glib-2.0 libcurl)
 
 SRCS=src/cpans.c \
 	src/membuf.c \

@@ -56,7 +56,7 @@ char *  find_minicpanrc()
     char *rc = (char*) malloc(  sizeof(char) * 100 );
     char *home = getenv("HOME");
     sprintf( rc , "%s/.minicpanrc" , home );
-    if (!g_file_test (rc, G_FILE_TEST_EXISTS))
+    if (!file_test (rc))
         return NULL;
     return rc;
 }

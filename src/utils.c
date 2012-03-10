@@ -16,6 +16,16 @@ char * indexfile() {
     return datafile;
 }
 
+int file_test( char * path ) 
+{
+    FILE* fp = fopen(path, "r");
+    if (fp) {
+        fclose(fp);
+        return 1;
+    }
+    return 0;
+}
+
 char * skipword( char * s2 ) {
 
     while( isgraph(*s2) ) { s2++; }

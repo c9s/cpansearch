@@ -19,4 +19,6 @@ typedef struct {
 
 typedef moduledata_t* modulelist_t;
 
+int file_test( char * path );
+
 #endif
