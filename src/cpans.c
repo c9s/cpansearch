@@ -9,7 +9,7 @@
 #include "init.h"
 #include "update.h"
 
-#define DEFAULT_MIRROR "http://cpan.perl.org/"
+#define DEFAULT_MIRROR "http://www.cpan.org/"
 
 char version[] = "0.2";
 char ignore_case = 0;
