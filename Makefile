@@ -2,9 +2,7 @@
 PROG=cpans
 DEFAULT_MIRROR=http://www.cpan.org/
 
-# CFLAGS= -I. -Iinclude/ -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
-# CFLAGS= -I. -Iinclude/ -Wall -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl) -D_GNU_SOURCE
-CFLAGS= -O3 -I. -Iinclude/ -Wall $$(pkg-config --static --cflags glib-2.0)
+CFLAGS=  -Wall -O3 -Iinclude $$(pkg-config --static --cflags glib-2.0)
 LDFLAGS= $$(pkg-config --static --libs glib-2.0) -lmenu -lncurses -lcurl
 
 SRCS=src/cpans.c \
@@ -29,7 +27,7 @@ $(PROG): $(OBJS)
 
 install: $(PROG)
 		./cpans --fetch $(DEFAULT_MIRROR)
-		mkdir -p    /usr/bin
+		mkdir -p /usr/bin
 		cp -v $(PROG) /usr/bin
 
 test:
