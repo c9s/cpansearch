@@ -176,7 +176,7 @@ void install_modules(char * prog, char **nlist , int len, int wait)
         pid = fork();
         if( pid == 0 ) {
             printf( "* Running %s %s\n" , prog , nlist[i] );
-            execl( prog , "" , " " , nlist[i] , 0 );
+            execl( prog , "" , " " , nlist[i] , NULL);
             exit(0);
         }
         if( wait )
