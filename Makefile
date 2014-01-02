@@ -1,13 +1,9 @@
 
 PROG=cpans
+DEFAULT_MIRROR=http://www.cpan.org/
 
-# CFLAGS= -I. -Iinclude/ -Wall -Werror -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl)
-# CFLAGS= -I. -Iinclude/ -Wall -std=c99 -g $$(pkg-config --cflags glib-2.0 libcurl) -D_GNU_SOURCE
-CFLAGS= -O3 -I. -Iinclude/ -Wall $$(pkg-config --static --cflags glib-2.0 libcurl) 
-
-CFLAGS+= -lmenu -lncurses 
-
-LDFLAGS= $$(pkg-config --static --libs glib-2.0 libcurl)
+CFLAGS=  -Wall -O3 -Iinclude $$(pkg-config --static --cflags glib-2.0)
+LDFLAGS= $$(pkg-config --static --libs glib-2.0) -lmenu -lncurses -lcurl
 
 SRCS=src/cpans.c \
 	src/membuf.c \
@@ -26,12 +22,12 @@ $(PROG): $(OBJS)
 		$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(PROG)
 		@echo "----------------"
 		@echo "When you upgrade cpans, please update the source data again with -f option:"
-		@echo "   cpans -f http://cpan.perl.org/"
+		@echo "   cpans -f $(DEFAULT_MIRROR)"
 		@echo "----------------"
 
 install: $(PROG)
-		./cpans --fetch http://cpan.perl.org/
-		mkdir -p    /usr/bin
+		./cpans --fetch $(DEFAULT_MIRROR)
+		mkdir -p /usr/bin
 		cp -v $(PROG) /usr/bin
 
 test:
