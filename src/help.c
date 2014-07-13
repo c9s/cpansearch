@@ -12,6 +12,10 @@ void help () {
             "     cpans --u  \n\n"
 
             "  To search:\n\n"
-            "     cpans [pattern]  \n\n" );
+            "     cpans [pattern]  \n\n" 
+
+            "  To enable ncurse mode:\n\n"
+            "     cpans --nc [pattern]  \n\n" 
+            );
 
 }
