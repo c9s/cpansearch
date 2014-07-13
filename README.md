@@ -70,7 +70,7 @@ install from macport:
 
 ## To initialize source list datafile.
 
-    $ cpans -f http://cpan.nctu.edu.tw/
+    $ cpans --fetch http://cpan.nctu.edu.tw/
 
     # this will autodetect local mirror from .minicpanrc
     $ cpans -f
